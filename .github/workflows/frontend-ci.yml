@@ -77,24 +77,17 @@ jobs:
           ${{ secrets.DOCKER_USERNAME }}/propmanager:latest
           ${{ secrets.DOCKER_USERNAME }}/propmanager:${{ github.sha }}
 
-  deploy-netlify:
+  deploy-vercel:
     needs: build
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
-    - name: Download build artifacts
-      uses: actions/download-artifact@v3
-      with:
-        name: build-files
-        path: build/
+    - uses: actions/checkout@v3
     
-    - name: Deploy to Netlify
-      uses: nwtgck/actions-netlify@v2.0
+    - name: Deploy to Vercel
+      uses: amondnet/vercel-action@v25
       with:
-        publish-dir: './build'
-        production-branch: main
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        deploy-message: "Deploy from GitHub Actions"
-      env:
-        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        vercel-token: ${{ secrets.VERCEL_TOKEN }}
+        vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+        vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+        vercel-args: '--prod'
