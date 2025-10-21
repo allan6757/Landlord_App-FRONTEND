@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Users, ArrowLeft, CreditCard, MessageCircle, Home, Calendar } from 'lucide-react';
+import { Users, ArrowLeft, CreditCard, Home, Calendar } from 'lucide-react';
 import STKPushPayment from './STKPushPayment';
 import Chat from './Chat';
 

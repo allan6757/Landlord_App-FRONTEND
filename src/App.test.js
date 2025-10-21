@@ -3,6 +3,6 @@ import App from './App';
 
 test('renders PropManager landing page', () => {
   render(<App />);
-  const linkElement = screen.getByText(/PropManager/i);
+  const linkElement = screen.getByText(/Property Management/i);
   expect(linkElement).toBeInTheDocument();
 });

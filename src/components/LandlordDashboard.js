@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Building2, Plus, Users, DollarSign, AlertCircle, MessageCircle, ArrowLeft } from 'lucide-react';
+import { Building2, Plus, Users, DollarSign, AlertCircle, ArrowLeft } from 'lucide-react';
 import PropertyForm from './PropertyForm';
 import Chat from './Chat';
 
