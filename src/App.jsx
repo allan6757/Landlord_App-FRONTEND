@@ -1,37 +1,91 @@
-import React from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { AuthProvider } from './contexts/AuthContext.jsx'
-import { ChatProvider } from './contexts/ChatContext.jsx'
-import Login from './pages/Login.jsx'
-import Register from './pages/Register.jsx'
-import Dashboard from './pages/Dashboard.jsx'
-import Properties from './pages/Properties.jsx'
-import Payments from './pages/Payments.jsx'
-import Chat from './pages/Chat.jsx'
-import Profile from './pages/Profile.jsx'
-import NotFound from './pages/NotFound.jsx'
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
+import ProtectedRoute from './components/common/ProtectedRoute';
+import Header from './components/layout/Header';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
+import Properties from './pages/Properties';
+import PropertyDetail from './pages/PropertyDetail';
+import CreateProperty from './pages/CreateProperty';
+import Payments from './pages/Payments';
+import Chat from './pages/Chat';
+import Profile from './pages/Profile';
 
 function App() {
   return (
-    <AuthProvider>
-      <ChatProvider>
-        <Router>
-          <div className="App">
+    <Router>
+      <AuthProvider>
+        <div className="min-h-screen bg-gray-50">
+          <Header />
+          <main>
             <Routes>
-              <Route path="/" element={<Dashboard />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route path="/properties" element={<Properties />} />
-              <Route path="/payments" element={<Payments />} />
-              <Route path="/chat" element={<Chat />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="*" element={<NotFound />} />
+              <Route 
+                path="/dashboard" 
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/properties" 
+                element={
+                  <ProtectedRoute>
+                    <Properties />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/properties/new" 
+                element={
+                  <ProtectedRoute>
+                    <CreateProperty />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/properties/:id" 
+                element={
+                  <ProtectedRoute>
+                    <PropertyDetail />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/payments" 
+                element={
+                  <ProtectedRoute>
+                    <Payments />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/chat" 
+                element={
+                  <ProtectedRoute>
+                    <Chat />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/profile" 
+                element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             </Routes>
-          </div>
-        </Router>
-      </ChatProvider>
-    </AuthProvider>
-  )
+          </main>
+        </div>
+      </AuthProvider>
+    </Router>
+  );
 }
 
-export default App
+export default App;
