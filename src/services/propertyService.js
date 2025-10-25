@@ -26,3 +26,6 @@ export const propertyService = {
     return response.data;
   },
 };
+
+export default propertyService;
+
