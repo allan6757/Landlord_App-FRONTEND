@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Building2, Plus, DollarSign, Users, TrendingUp, ArrowLeft, MessageCircle, Edit, Trash2 } from 'lucide-react';
-import PropertyForm from './PropertyForm';
-import Chat from './Chat';
+import PropertyForm from './PropertyForm.jsx';
+import Chat from './Chat.jsx';
 
 const LandlordDashboard = ({ onBack }) => {
   const [activeTab, setActiveTab] = useState('overview');

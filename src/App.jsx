@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import LandingPage from './components/LandingPage';
-import LandlordDashboard from './components/LandlordDashboard';
-import TenantPortal from './components/TenantPortal';
+import LandingPage from './components/LandingPage.jsx';
+import LandlordDashboard from './components/LandlordDashboard.jsx';
+import TenantPortal from './components/TenantPortal.jsx';
 
 function App() {
   const [currentView, setCurrentView] = useState('landing');

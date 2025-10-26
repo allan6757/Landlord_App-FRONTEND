@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Home, CreditCard, MessageCircle, ArrowLeft, Calendar, CheckCircle, Clock, AlertCircle } from 'lucide-react';
-import STKPushPayment from './STKPushPayment';
-import Chat from './Chat';
+import STKPushPayment from './STKPushPayment.jsx';
+import Chat from './Chat.jsx';
 
 const TenantPortal = ({ onBack }) => {
   const [activeTab, setActiveTab] = useState('overview');
