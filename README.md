@@ -68,4 +68,4 @@ src/
 
 ## Demo Data
 
-The application uses mock data for demonstration purposes. All data is stored in component state and will reset on page refresh.
+The application uses mock data for demonstration purposes. All data is stored in component state and will reset on page refresh.# Build trigger
