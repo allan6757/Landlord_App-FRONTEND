@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
-import { Building2, Plus, DollarSign, Users, TrendingUp, ArrowLeft, MessageCircle, Edit, Trash2 } from 'lucide-react';
+import { Building2, Plus, DollarSign, Users, TrendingUp, ArrowLeft, MessageCircle, Edit, Trash2, Eye } from 'lucide-react';
 import PropertyForm from './PropertyForm.jsx';
 import Chat from './Chat.jsx';
+import UnitsView from './UnitsView.jsx';
+import UnitDetail from './UnitDetail.jsx';
 
 const LandlordDashboard = ({ onBack }) => {
   const [activeTab, setActiveTab] = useState('overview');
   const [showPropertyForm, setShowPropertyForm] = useState(false);
   const [editingProperty, setEditingProperty] = useState(null);
+  const [viewingUnits, setViewingUnits] = useState(null);
+  const [viewingUnit, setViewingUnit] = useState(null);
   const [properties, setProperties] = useState([
     {
       id: 1,
@@ -78,6 +82,26 @@ const LandlordDashboard = ({ onBack }) => {
           setShowPropertyForm(false);
           setEditingProperty(null);
         }}
+      />
+    );
+  }
+
+  if (viewingUnit) {
+    return (
+      <UnitDetail
+        unit={viewingUnit}
+        property={viewingUnits}
+        onBack={() => setViewingUnit(null)}
+      />
+    );
+  }
+
+  if (viewingUnits) {
+    return (
+      <UnitsView
+        property={viewingUnits}
+        onBack={() => setViewingUnits(null)}
+        onViewUnit={(unit) => setViewingUnit(unit)}
       />
     );
   }
@@ -215,6 +239,13 @@ const LandlordDashboard = ({ onBack }) => {
                       <div className="flex justify-between items-start mb-2">
                         <h4 className="font-semibold text-gray-900">{property.name}</h4>
                         <div className="flex space-x-2">
+                          <button
+                            onClick={() => setViewingUnits(property)}
+                            className="p-1 text-gray-400 hover:text-green-600"
+                            title="View Units"
+                          >
+                            <Eye className="h-4 w-4" />
+                          </button>
                           <button
                             onClick={() => {
                               setEditingProperty(property);

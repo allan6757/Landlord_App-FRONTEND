@@ -7,7 +7,7 @@ const TenantPortal = ({ onBack }) => {
   const [activeTab, setActiveTab] = useState('overview');
   const [showPayment, setShowPayment] = useState(false);
 
-  // Mock tenant data
+  // Mock tenant data with bill breakdown
   const tenantData = {
     name: 'John Doe',
     property: 'Sunset Apartments',
@@ -15,7 +15,14 @@ const TenantPortal = ({ onBack }) => {
     monthlyRent: 25000,
     nextDueDate: '2024-02-01',
     landlord: 'Sarah Wilson',
-    address: '123 Main St, Nairobi'
+    address: '123 Main St, Nairobi',
+    billBreakdown: {
+      rent: 25000,
+      water: 1500,
+      electricity: 2000,
+      maintenance: 500,
+      total: 29000
+    }
   };
 
   const [paymentHistory, setPaymentHistory] = useState([
@@ -59,7 +66,8 @@ const TenantPortal = ({ onBack }) => {
   if (showPayment) {
     return (
       <STKPushPayment
-        amount={tenantData.monthlyRent}
+        amount={showPayment === 'partial' ? null : showPayment}
+        billBreakdown={tenantData.billBreakdown}
         onSuccess={handlePaymentSuccess}
         onCancel={() => setShowPayment(false)}
       />
@@ -170,27 +178,63 @@ const TenantPortal = ({ onBack }) => {
 
         {/* Payments Tab */}
         {activeTab === 'payments' && (
-          <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-6">Make Payment</h3>
-            <div className="max-w-md mx-auto text-center">
-              <div className="mb-6">
-                <CreditCard className="h-16 w-16 text-indigo-600 mx-auto mb-4" />
-                <h4 className="text-xl font-semibold text-gray-900 mb-2">Pay Your Rent</h4>
-                <p className="text-gray-600 mb-4">
-                  Secure payment via M-Pesa STK Push
-                </p>
-                <div className="bg-indigo-50 p-4 rounded-lg mb-6">
-                  <p className="text-sm text-gray-600">Amount Due</p>
-                  <p className="text-3xl font-bold text-indigo-600">KSh {tenantData.monthlyRent.toLocaleString()}</p>
-                  <p className="text-sm text-gray-500">Due: {tenantData.nextDueDate}</p>
+          <div className="space-y-6">
+            {/* Bill Breakdown */}
+            <div className="bg-white rounded-lg shadow p-6">
+              <h3 className="text-lg font-medium text-gray-900 mb-4">Monthly Bill Breakdown</h3>
+              <div className="space-y-3 mb-6">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Base Rent</span>
+                  <span className="font-medium">KSh {tenantData.billBreakdown.rent.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Water Bill</span>
+                  <span className="font-medium">KSh {tenantData.billBreakdown.water.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Electricity</span>
+                  <span className="font-medium">KSh {tenantData.billBreakdown.electricity.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Maintenance Fee</span>
+                  <span className="font-medium">KSh {tenantData.billBreakdown.maintenance.toLocaleString()}</span>
+                </div>
+                <hr className="my-3" />
+                <div className="flex justify-between text-lg font-semibold">
+                  <span>Total Amount Due</span>
+                  <span className="text-indigo-600">KSh {tenantData.billBreakdown.total.toLocaleString()}</span>
                 </div>
               </div>
-              <button
-                onClick={() => setShowPayment(true)}
-                className="w-full bg-indigo-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-indigo-700 transition-colors"
-              >
-                Pay with M-Pesa
-              </button>
+            </div>
+
+            {/* Payment Options */}
+            <div className="bg-white rounded-lg shadow p-6">
+              <h3 className="text-lg font-medium text-gray-900 mb-6">Payment Options</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <button
+                  onClick={() => setShowPayment(tenantData.billBreakdown.total)}
+                  className="p-4 border-2 border-indigo-200 rounded-lg hover:border-indigo-400 hover:bg-indigo-50 transition-colors"
+                >
+                  <div className="text-center">
+                    <CreditCard className="h-8 w-8 text-indigo-600 mx-auto mb-2" />
+                    <h4 className="font-semibold text-gray-900 mb-1">Full Payment</h4>
+                    <p className="text-sm text-gray-600 mb-2">Pay complete bill</p>
+                    <p className="text-lg font-bold text-indigo-600">KSh {tenantData.billBreakdown.total.toLocaleString()}</p>
+                  </div>
+                </button>
+                
+                <button
+                  onClick={() => setShowPayment('partial')}
+                  className="p-4 border-2 border-green-200 rounded-lg hover:border-green-400 hover:bg-green-50 transition-colors"
+                >
+                  <div className="text-center">
+                    <CreditCard className="h-8 w-8 text-green-600 mx-auto mb-2" />
+                    <h4 className="font-semibold text-gray-900 mb-1">Partial Payment</h4>
+                    <p className="text-sm text-gray-600 mb-2">Pay custom amount</p>
+                    <p className="text-lg font-bold text-green-600">Custom Amount</p>
+                  </div>
+                </button>
+              </div>
             </div>
           </div>
         )}

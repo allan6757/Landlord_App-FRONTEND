@@ -1,15 +1,23 @@
 import React, { useState } from 'react';
 import { ArrowLeft, Smartphone, CheckCircle, Loader } from 'lucide-react';
 
-const STKPushPayment = ({ amount, onSuccess, onCancel }) => {
+const STKPushPayment = ({ amount, billBreakdown, onSuccess, onCancel }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [step, setStep] = useState('input'); // input, processing, success
   const [paymentReference, setPaymentReference] = useState('');
+  const [customAmount, setCustomAmount] = useState('');
+  const [paymentType, setPaymentType] = useState(amount ? 'full' : 'partial');
+  
+  const finalAmount = paymentType === 'partial' ? parseInt(customAmount) || 0 : amount || billBreakdown?.total || 0;
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!phoneNumber || phoneNumber.length < 10) {
       alert('Please enter a valid phone number');
+      return;
+    }
+    if (paymentType === 'partial' && (!customAmount || customAmount <= 0)) {
+      alert('Please enter a valid amount');
       return;
     }
 
@@ -24,10 +32,11 @@ const STKPushPayment = ({ amount, onSuccess, onCancel }) => {
       // Auto-complete after showing success
       setTimeout(() => {
         onSuccess({
-          amount,
+          amount: finalAmount,
           phoneNumber,
           reference,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
+          type: paymentType
         });
       }, 2000);
     }, 3000);
@@ -78,9 +87,83 @@ const STKPushPayment = ({ amount, onSuccess, onCancel }) => {
                 <p className="text-gray-600">Enter your phone number to receive STK push</p>
               </div>
 
+              {/* Bill Breakdown */}
+              {billBreakdown && (
+                <div className="bg-gray-50 p-4 rounded-lg mb-4">
+                  <h4 className="font-semibold text-gray-900 mb-2">Bill Breakdown</h4>
+                  <div className="space-y-1 text-sm">
+                    <div className="flex justify-between">
+                      <span>Rent:</span>
+                      <span>KSh {billBreakdown.rent.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Water:</span>
+                      <span>KSh {billBreakdown.water.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Electricity:</span>
+                      <span>KSh {billBreakdown.electricity.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Maintenance:</span>
+                      <span>KSh {billBreakdown.maintenance.toLocaleString()}</span>
+                    </div>
+                    <hr className="my-1" />
+                    <div className="flex justify-between font-semibold">
+                      <span>Total:</span>
+                      <span>KSh {billBreakdown.total.toLocaleString()}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Payment Type Selection */}
+              {!amount && (
+                <div className="mb-4">
+                  <div className="flex space-x-4 mb-4">
+                    <button
+                      type="button"
+                      onClick={() => setPaymentType('full')}
+                      className={`flex-1 p-3 rounded-lg border-2 ${paymentType === 'full' ? 'border-green-500 bg-green-50' : 'border-gray-200'}`}
+                    >
+                      <div className="text-center">
+                        <p className="font-semibold">Full Payment</p>
+                        <p className="text-sm text-gray-600">KSh {billBreakdown?.total.toLocaleString()}</p>
+                      </div>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPaymentType('partial')}
+                      className={`flex-1 p-3 rounded-lg border-2 ${paymentType === 'partial' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}`}
+                    >
+                      <div className="text-center">
+                        <p className="font-semibold">Partial Payment</p>
+                        <p className="text-sm text-gray-600">Custom Amount</p>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Amount Display */}
               <div className="bg-green-50 p-4 rounded-lg mb-6 text-center">
                 <p className="text-sm text-gray-600">Amount to Pay</p>
-                <p className="text-3xl font-bold text-green-600">KSh {amount.toLocaleString()}</p>
+                {paymentType === 'partial' ? (
+                  <div>
+                    <input
+                      type="number"
+                      value={customAmount}
+                      onChange={(e) => setCustomAmount(e.target.value)}
+                      placeholder="Enter amount"
+                      className="text-2xl font-bold text-green-600 bg-transparent border-none text-center w-full focus:outline-none"
+                      min="1"
+                      max={billBreakdown?.total || amount}
+                    />
+                    <p className="text-xs text-gray-500">Max: KSh {(billBreakdown?.total || amount)?.toLocaleString()}</p>
+                  </div>
+                ) : (
+                  <p className="text-3xl font-bold text-green-600">KSh {finalAmount.toLocaleString()}</p>
+                )}
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-6">
@@ -132,7 +215,7 @@ const STKPushPayment = ({ amount, onSuccess, onCancel }) => {
                   <strong>Phone:</strong> {phoneNumber}
                 </p>
                 <p className="text-sm text-yellow-800">
-                  <strong>Amount:</strong> KSh {amount.toLocaleString()}
+                  <strong>Amount:</strong> KSh {finalAmount.toLocaleString()}
                 </p>
               </div>
               <p className="text-xs text-gray-500 mt-4">
@@ -155,7 +238,10 @@ const STKPushPayment = ({ amount, onSuccess, onCancel }) => {
                   <strong>Reference:</strong> {paymentReference}
                 </p>
                 <p className="text-sm text-green-800">
-                  <strong>Amount:</strong> KSh {amount.toLocaleString()}
+                  <strong>Amount:</strong> KSh {finalAmount.toLocaleString()}
+                </p>
+                <p className="text-sm text-green-800">
+                  <strong>Type:</strong> {paymentType === 'full' ? 'Full Payment' : 'Partial Payment'}
                 </p>
                 <p className="text-sm text-green-800">
                   <strong>Phone:</strong> {phoneNumber}
