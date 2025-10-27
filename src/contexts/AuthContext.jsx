@@ -1,82 +1,246 @@
-import React, { createContext, useState, useEffect } from 'react';
+/**
+ * Authentication Context - Property Management System
+ * 
+ * This context manages user authentication state for our Property Management Application.
+ * It handles login, registration, and user session management.
+ * 
+ * Features Supported:
+ * - JWT Authentication (as per capstone requirements)
+ * - Role-Based Access Control (Landlord/Tenant roles)
+ * - Persistent login sessions
+ * - Error handling with user-friendly messages
+ * 
+ * Learning Goals Demonstrated:
+ * - React Context API for global state management
+ * - Local storage for data persistence
+ * - Async/await for API calls
+ * - Error handling and validation
+ */
 
+import React, { createContext, useContext, useState, useEffect } from 'react';
+
+// Create the authentication context
 const AuthContext = createContext();
 
+/**
+ * Custom hook to use authentication context
+ * This makes it easy to access auth state in any component
+ */
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
+
+/**
+ * AuthProvider Component
+ * Wraps the app and provides authentication functionality
+ */
 export const AuthProvider = ({ children }) => {
+  // State management for authentication
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  /**
+   * Initialize authentication state on app startup
+   * Checks if user was previously logged in
+   */
   useEffect(() => {
-    // Check for existing session on app load
-    const checkAuth = () => {
-      const token = localStorage.getItem('authToken');
-      const userData = localStorage.getItem('userData');
-      
-      if (token && userData) {
-        setUser(JSON.parse(userData));
+    const initializeAuth = () => {
+      try {
+        const savedUser = localStorage.getItem('user');
+        const token = localStorage.getItem('auth_token');
+        
+        if (savedUser && token) {
+          // Restore user session
+          setUser(JSON.parse(savedUser));
+        }
+      } catch (error) {
+        console.error('Error initializing auth:', error);
+        // Clear corrupted data
+        localStorage.removeItem('user');
+        localStorage.removeItem('auth_token');
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
-    checkAuth();
+    initializeAuth();
   }, []);
 
-  const login = async (credentials) => {
-    setLoading(true);
+  /**
+   * Login Function
+   * Authenticates user with email and password
+   * 
+   * @param {string} email - User's email address
+   * @param {string} password - User's password
+   * @returns {Object} - Success status and error message if any
+   */
+  const login = async (email, password) => {
     try {
-      // Simulate API call
-      const mockUser = {
-        id: 1,
-        email: credentials.email,
-        name: 'John Doe',
-        role: 'landlord'
+      // TODO: Replace with actual API call to Flask backend
+      // const response = await fetch('/api/auth/login', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ email, password })
+      // });
+
+      // Mock authentication for development
+      // This simulates different user roles for testing
+      const mockUsers = {
+        'landlord@test.com': {
+          id: 1,
+          email: 'landlord@test.com',
+          name: 'John Landlord',
+          role: 'landlord',
+          properties: []
+        },
+        'tenant@test.com': {
+          id: 2,
+          email: 'tenant@test.com',
+          name: 'Jane Tenant',
+          role: 'tenant',
+          propertyId: null
+        }
       };
+
+      const mockUser = mockUsers[email];
       
-      localStorage.setItem('authToken', 'mock-token');
-      localStorage.setItem('userData', JSON.stringify(mockUser));
+      if (!mockUser || password !== 'password123') {
+        return { 
+          success: false, 
+          error: 'Invalid email or password' 
+        };
+      }
+
+      // Simulate JWT token
+      const mockToken = `jwt-token-${Date.now()}`;
+      
+      // Save authentication data
+      localStorage.setItem('user', JSON.stringify(mockUser));
+      localStorage.setItem('auth_token', mockToken);
+      
+      // Update application state
       setUser(mockUser);
+      
       return { success: true };
+      
     } catch (error) {
-      return { success: false, error: error.message };
-    } finally {
-      setLoading(false);
+      console.error('Login error:', error);
+      return { 
+        success: false, 
+        error: 'Login failed. Please try again.' 
+      };
     }
   };
 
+  /**
+   * Register Function
+   * Creates a new user account
+   * 
+   * @param {Object} userData - User registration data
+   * @returns {Object} - Success status and error message if any
+   */
   const register = async (userData) => {
-    setLoading(true);
     try {
-      // Simulate API call
-      const mockUser = {
+      // TODO: Replace with actual API call to Flask backend
+      // const response = await fetch('/api/auth/register', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify(userData)
+      // });
+
+      // Mock registration for development
+      const newUser = {
         id: Date.now(),
         email: userData.email,
-        name: userData.name,
-        role: userData.role || 'tenant'
+        name: `${userData.firstName} ${userData.lastName}`,
+        role: userData.role || 'tenant', // Default to tenant role
+        properties: userData.role === 'landlord' ? [] : undefined,
+        propertyId: userData.role === 'tenant' ? null : undefined
       };
       
-      localStorage.setItem('authToken', 'mock-token');
-      localStorage.setItem('userData', JSON.stringify(mockUser));
-      setUser(mockUser);
+      // Simulate JWT token
+      const mockToken = `jwt-token-${Date.now()}`;
+      
+      // Save authentication data
+      localStorage.setItem('user', JSON.stringify(newUser));
+      localStorage.setItem('auth_token', mockToken);
+      
+      // Update application state
+      setUser(newUser);
+      
       return { success: true };
+      
     } catch (error) {
-      return { success: false, error: error.message };
-    } finally {
-      setLoading(false);
+      console.error('Registration error:', error);
+      return { 
+        success: false, 
+        error: 'Registration failed. Please try again.' 
+      };
     }
   };
 
+  /**
+   * Logout Function
+   * Clears user session and authentication data
+   */
   const logout = () => {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('userData');
-    setUser(null);
+    try {
+      // Clear local storage
+      localStorage.removeItem('user');
+      localStorage.removeItem('auth_token');
+      
+      // Clear application state
+      setUser(null);
+      
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   };
 
+  /**
+   * Check if user is authenticated
+   * @returns {boolean} - Authentication status
+   */
+  const isAuthenticated = () => {
+    return user !== null && localStorage.getItem('auth_token') !== null;
+  };
+
+  /**
+   * Check if user has specific role
+   * @param {string} role - Role to check
+   * @returns {boolean} - Role check result
+   */
+  const hasRole = (role) => {
+    return user && user.role === role;
+  };
+
+  /**
+   * Get authentication token
+   * @returns {string|null} - JWT token or null
+   */
+  const getToken = () => {
+    return localStorage.getItem('auth_token');
+  };
+
+  // Context value object
   const value = {
+    // State
     user,
     loading,
+    
+    // Authentication methods
     login,
     register,
-    logout
+    logout,
+    
+    // Utility methods
+    isAuthenticated,
+    hasRole,
+    getToken
   };
 
   return (
@@ -85,5 +249,3 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
-
-export default AuthContext;
