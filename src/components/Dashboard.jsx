@@ -150,17 +150,26 @@ const Dashboard = () => {
       <div className="bg-white rounded-lg shadow-sm border p-6">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <button className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+          <button 
+            onClick={() => alert('Add Property feature coming soon!')}
+            className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+          >
             <Plus className="h-5 w-5 text-blue-600 mr-3" />
             <span className="text-sm font-medium text-gray-700">Add New Property</span>
           </button>
           
-          <button className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+          <button 
+            onClick={() => alert('Manage Tenants feature coming soon!')}
+            className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+          >
             <Users className="h-5 w-5 text-green-600 mr-3" />
             <span className="text-sm font-medium text-gray-700">Manage Tenants</span>
           </button>
           
-          <button className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+          <button 
+            onClick={() => alert('Messaging feature coming soon!')}
+            className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+          >
             <MessageSquare className="h-5 w-5 text-purple-600 mr-3" />
             <span className="text-sm font-medium text-gray-700">Send Message</span>
           </button>
@@ -235,7 +244,10 @@ const Dashboard = () => {
 
         {/* Pay Rent Button */}
         <div className="mt-6">
-          <button className="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-medium transition-colors">
+          <button 
+            onClick={() => alert('M-Pesa payment integration coming soon!')}
+            className="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-medium transition-colors"
+          >
             Pay Rent via M-Pesa
           </button>
         </div>
@@ -245,7 +257,10 @@ const Dashboard = () => {
       <div className="bg-white rounded-lg shadow-sm border p-6">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <button className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+          <button 
+            onClick={() => alert('Chat feature coming soon!')}
+            className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+          >
             <MessageSquare className="h-5 w-5 text-blue-600 mr-3" />
             <div className="text-left">
               <span className="text-sm font-medium text-gray-700 block">Contact Landlord</span>
@@ -253,7 +268,10 @@ const Dashboard = () => {
             </div>
           </button>
           
-          <button className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+          <button 
+            onClick={() => alert('Maintenance request feature coming soon!')}
+            className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+          >
             <Settings className="h-5 w-5 text-purple-600 mr-3" />
             <div className="text-left">
               <span className="text-sm font-medium text-gray-700 block">Maintenance Request</span>
