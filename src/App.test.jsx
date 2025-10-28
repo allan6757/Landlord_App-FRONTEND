@@ -5,6 +5,6 @@ import App from './App'
 describe('App', () => {
   it('renders without crashing', () => {
     render(<App />)
-    expect(screen.getByText(/PropManager/i)).toBeInTheDocument()
+    expect(screen.getAllByText(/PropManager/i)[0]).toBeInTheDocument()
   })
 })
