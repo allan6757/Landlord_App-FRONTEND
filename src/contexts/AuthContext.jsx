@@ -80,52 +80,30 @@ export const AuthProvider = ({ children }) => {
    */
   const login = async (email, password) => {
     try {
-      // TODO: Replace with actual API call to Flask backend
-      // const response = await fetch('/api/auth/login', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ email, password })
-      // });
+      // Call backend API for authentication
+      const response = await fetch(`${process.env.VITE_API_URL || 'https://landlord-app-backend-1eph.onrender.com'}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
 
-      // Mock authentication for development
-      // This simulates different user roles for testing
-      const mockUsers = {
-        'landlord@test.com': {
-          id: 1,
-          email: 'landlord@test.com',
-          name: 'John Landlord',
-          role: 'landlord',
-          properties: []
-        },
-        'tenant@test.com': {
-          id: 2,
-          email: 'tenant@test.com',
-          name: 'Jane Tenant',
-          role: 'tenant',
-          propertyId: null
-        }
-      };
-
-      const mockUser = mockUsers[email];
+      const data = await response.json();
       
-      if (!mockUser || password !== 'password123') {
+      if (response.ok && data.access_token) {
+        // Save authentication data
+        localStorage.setItem('user', JSON.stringify(data.user));
+        localStorage.setItem('auth_token', data.access_token);
+        
+        // Update application state
+        setUser(data.user);
+        
+        return { success: true };
+      } else {
         return { 
           success: false, 
-          error: 'Invalid email or password' 
+          error: data.message || 'Invalid email or password' 
         };
       }
-
-      // Simulate JWT token
-      const mockToken = `jwt-token-${Date.now()}`;
-      
-      // Save authentication data
-      localStorage.setItem('user', JSON.stringify(mockUser));
-      localStorage.setItem('auth_token', mockToken);
-      
-      // Update application state
-      setUser(mockUser);
-      
-      return { success: true };
       
     } catch (error) {
       console.error('Login error:', error);
@@ -145,34 +123,36 @@ export const AuthProvider = ({ children }) => {
    */
   const register = async (userData) => {
     try {
-      // TODO: Replace with actual API call to Flask backend
-      // const response = await fetch('/api/auth/register', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(userData)
-      // });
+      // Call backend API for registration
+      const response = await fetch(`${process.env.VITE_API_URL || 'https://landlord-app-backend-1eph.onrender.com'}/api/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          first_name: userData.firstName,
+          last_name: userData.lastName,
+          email: userData.email,
+          password: userData.password,
+          role: userData.role
+        })
+      });
 
-      // Mock registration for development
-      const newUser = {
-        id: Date.now(),
-        email: userData.email,
-        name: `${userData.firstName} ${userData.lastName}`,
-        role: userData.role || 'tenant', // Default to tenant role
-        properties: userData.role === 'landlord' ? [] : undefined,
-        propertyId: userData.role === 'tenant' ? null : undefined
-      };
+      const data = await response.json();
       
-      // Simulate JWT token
-      const mockToken = `jwt-token-${Date.now()}`;
-      
-      // Save authentication data
-      localStorage.setItem('user', JSON.stringify(newUser));
-      localStorage.setItem('auth_token', mockToken);
-      
-      // Update application state
-      setUser(newUser);
-      
-      return { success: true };
+      if (response.ok && data.access_token) {
+        // Save authentication data
+        localStorage.setItem('user', JSON.stringify(data.user));
+        localStorage.setItem('auth_token', data.access_token);
+        
+        // Update application state
+        setUser(data.user);
+        
+        return { success: true };
+      } else {
+        return { 
+          success: false, 
+          error: data.message || 'Registration failed' 
+        };
+      }
       
     } catch (error) {
       console.error('Registration error:', error);
