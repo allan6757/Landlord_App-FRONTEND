@@ -80,28 +80,28 @@ export const AuthProvider = ({ children }) => {
    */
   const login = async (email, password) => {
     try {
-      // Call backend API for authentication
-      const response = await fetch(`${process.env.VITE_API_URL || 'https://landlord-app-backend-1eph.onrender.com'}/api/auth/login`, {
+      console.log('Attempting login with:', { email });
+      
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://landlord-app-backend-1eph.onrender.com'}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
       });
 
+      console.log('Login response status:', response.status);
+      
       const data = await response.json();
+      console.log('Login response data:', data);
       
       if (response.ok && data.access_token) {
-        // Save authentication data
         localStorage.setItem('user', JSON.stringify(data.user));
         localStorage.setItem('auth_token', data.access_token);
-        
-        // Update application state
         setUser(data.user);
-        
         return { success: true };
       } else {
         return { 
           success: false, 
-          error: data.message || 'Invalid email or password' 
+          error: data.message || data.error || 'Login failed' 
         };
       }
       
@@ -109,7 +109,7 @@ export const AuthProvider = ({ children }) => {
       console.error('Login error:', error);
       return { 
         success: false, 
-        error: 'Login failed. Please try again.' 
+        error: 'Network error. Please try again.' 
       };
     }
   };
@@ -123,34 +123,36 @@ export const AuthProvider = ({ children }) => {
    */
   const register = async (userData) => {
     try {
-      // Call backend API for registration
-      const response = await fetch(`${process.env.VITE_API_URL || 'https://landlord-app-backend-1eph.onrender.com'}/api/auth/register`, {
+      const payload = {
+        first_name: userData.firstName,
+        last_name: userData.lastName,
+        email: userData.email,
+        password: userData.password,
+        role: userData.role
+      };
+      
+      console.log('Attempting registration with:', payload);
+      
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://landlord-app-backend-1eph.onrender.com'}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          first_name: userData.firstName,
-          last_name: userData.lastName,
-          email: userData.email,
-          password: userData.password,
-          role: userData.role
-        })
+        body: JSON.stringify(payload)
       });
 
+      console.log('Register response status:', response.status);
+      
       const data = await response.json();
+      console.log('Register response data:', data);
       
       if (response.ok && data.access_token) {
-        // Save authentication data
         localStorage.setItem('user', JSON.stringify(data.user));
         localStorage.setItem('auth_token', data.access_token);
-        
-        // Update application state
         setUser(data.user);
-        
         return { success: true };
       } else {
         return { 
           success: false, 
-          error: data.message || 'Registration failed' 
+          error: data.message || data.error || 'Registration failed' 
         };
       }
       
@@ -158,7 +160,7 @@ export const AuthProvider = ({ children }) => {
       console.error('Registration error:', error);
       return { 
         success: false, 
-        error: 'Registration failed. Please try again.' 
+        error: 'Network error. Please try again.' 
       };
     }
   };
