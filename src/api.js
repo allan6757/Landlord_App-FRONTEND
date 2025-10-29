@@ -4,6 +4,7 @@ const getAuthHeaders = () => {
   const token = localStorage.getItem('auth_token')
   return {
     'Content-Type': 'application/json',
+    'Accept': 'application/json',
     ...(token && { 'Authorization': `Bearer ${token}` })
   }
 }
@@ -19,7 +20,9 @@ const handleResponse = async (response) => {
 export const api = {
   get: async (endpoint) => {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-      headers: getAuthHeaders()
+      method: 'GET',
+      headers: getAuthHeaders(),
+      credentials: 'include'
     })
     return handleResponse(response)
   },
@@ -27,7 +30,8 @@ export const api = {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       method: 'POST',
       headers: getAuthHeaders(),
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
+      credentials: 'include'
     })
     return handleResponse(response)
   },
