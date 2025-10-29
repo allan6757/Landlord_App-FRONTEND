@@ -124,17 +124,16 @@ const Register = () => {
   const roleOptions = [
     {
       value: 'landlord',
-      title: 'Landlord',
-      description: 'I want to manage properties and collect rent',
-      icon: <Building2 className="h-8 w-8 text-blue-600" />,
-      color: 'border-blue-500 bg-blue-50'
+      title: 'Property Owner',
+      description: 'Manage properties and tenant relations',
+      icon: <Building2 className="h-8 w-8 text-navy-900" />
     },
     {
       value: 'tenant',
       title: 'Tenant',
-      description: 'I want to pay rent and communicate with my landlord',
-      icon: <Users className="h-8 w-8 text-green-600" />,
-      color: 'border-green-500 bg-green-50'
+      description: 'Access payment portal and property services',
+      icon: <Users className="h-8 w-8 text-navy-900" />
+    }
     }
   ];
 
@@ -153,18 +152,18 @@ const Register = () => {
         {/* Header */}
         <div className="text-center">
           <div className="flex justify-center">
-            <Building2 className="h-12 w-12 text-blue-600" />
+            <Building2 className="h-12 w-12 text-navy-900" />
           </div>
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-            Create your account
+          <h2 className="mt-6 text-3xl font-extrabold text-navy-900">
+            Create Account
           </h2>
-          <p className="mt-2 text-sm text-gray-600">
+          <p className="mt-2 text-sm text-navy-600">
             Or{' '}
             <Link
               to="/login"
-              className="font-medium text-blue-600 hover:text-blue-500"
+              className="font-medium text-navy-900 hover:text-navy-700"
             >
-              sign in to your existing account
+              sign in to existing account
             </Link>
           </p>
         </div>
@@ -187,8 +186,8 @@ const Register = () => {
 
           {/* Role Selection */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-3">
-              I am a:
+            <label className="block text-sm font-medium text-navy-700 mb-3">
+              Account Type:
             </label>
             <div className="grid grid-cols-1 gap-3">
               {roleOptions.map((option) => (
@@ -198,8 +197,8 @@ const Register = () => {
                   className={`
                     relative cursor-pointer rounded-lg border p-4 hover:shadow-md transition-all
                     ${selectedRole === option.value 
-                      ? `${option.color} ring-2 ring-offset-2 ring-blue-500` 
-                      : 'border-gray-300 bg-white'
+                      ? 'border-navy-500 bg-navy-50 ring-2 ring-offset-2 ring-navy-500' 
+                      : 'border-navy-300 bg-white'
                     }
                   `}
                 >
@@ -208,15 +207,15 @@ const Register = () => {
                       {option.icon}
                     </div>
                     <div className="ml-3 flex-1">
-                      <h3 className="text-sm font-medium text-gray-900">
+                      <h3 className="text-sm font-medium text-navy-900">
                         {option.title}
                       </h3>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-navy-600">
                         {option.description}
                       </p>
                     </div>
                     {selectedRole === option.value && (
-                      <CheckCircle className="h-5 w-5 text-blue-600" />
+                      <CheckCircle className="h-5 w-5 text-navy-900" />
                     )}
                   </div>
                   
@@ -245,7 +244,7 @@ const Register = () => {
           <div className="grid grid-cols-2 gap-4">
             {/* First Name Field */}
             <div>
-              <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="firstName" className="block text-sm font-medium text-navy-700">
                 First Name
               </label>
               <div className="mt-1 relative">
@@ -261,8 +260,8 @@ const Register = () => {
                   autoComplete="given-name"
                   className={`
                     appearance-none block w-full px-3 py-2 pl-10 border rounded-md 
-                    placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500
-                    ${errors.firstName ? 'border-red-300' : 'border-gray-300'}
+                    placeholder-navy-400 focus:outline-none focus:ring-navy-500 focus:border-navy-500
+                    ${errors.firstName ? 'border-red-300' : 'border-navy-300'}
                   `}
                   placeholder="First name"
                 />
@@ -277,7 +276,7 @@ const Register = () => {
 
             {/* Last Name Field */}
             <div>
-              <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="lastName" className="block text-sm font-medium text-navy-700">
                 Last Name
               </label>
               <div className="mt-1 relative">
@@ -293,8 +292,8 @@ const Register = () => {
                   autoComplete="family-name"
                   className={`
                     appearance-none block w-full px-3 py-2 pl-10 border rounded-md 
-                    placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500
-                    ${errors.lastName ? 'border-red-300' : 'border-gray-300'}
+                    placeholder-navy-400 focus:outline-none focus:ring-navy-500 focus:border-navy-500
+                    ${errors.lastName ? 'border-red-300' : 'border-navy-300'}
                   `}
                   placeholder="Last name"
                 />
@@ -310,8 +309,8 @@ const Register = () => {
 
           {/* Email Field */}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-              Email address
+            <label htmlFor="email" className="block text-sm font-medium text-navy-700">
+              Email Address
             </label>
             <div className="mt-1 relative">
               <input
@@ -326,8 +325,8 @@ const Register = () => {
                 autoComplete="email"
                 className={`
                   appearance-none block w-full px-3 py-2 pl-10 border rounded-md 
-                  placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500
-                  ${errors.email ? 'border-red-300' : 'border-gray-300'}
+                  placeholder-navy-400 focus:outline-none focus:ring-navy-500 focus:border-navy-500
+                  ${errors.email ? 'border-red-300' : 'border-navy-300'}
                 `}
                 placeholder="Enter your email"
               />
@@ -342,7 +341,7 @@ const Register = () => {
 
           {/* Password Field */}
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="password" className="block text-sm font-medium text-navy-700">
               Password
             </label>
             <div className="mt-1 relative">
@@ -362,8 +361,8 @@ const Register = () => {
                 autoComplete="new-password"
                 className={`
                   appearance-none block w-full px-3 py-2 pl-10 pr-10 border rounded-md 
-                  placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500
-                  ${errors.password ? 'border-red-300' : 'border-gray-300'}
+                  placeholder-navy-400 focus:outline-none focus:ring-navy-500 focus:border-navy-500
+                  ${errors.password ? 'border-red-300' : 'border-navy-300'}
                 `}
                 placeholder="Create a password"
               />
@@ -389,7 +388,7 @@ const Register = () => {
 
           {/* Confirm Password Field */}
           <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="confirmPassword" className="block text-sm font-medium text-navy-700">
               Confirm Password
             </label>
             <div className="mt-1 relative">
@@ -402,8 +401,8 @@ const Register = () => {
                 autoComplete="new-password"
                 className={`
                   appearance-none block w-full px-3 py-2 pl-10 pr-10 border rounded-md 
-                  placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500
-                  ${errors.confirmPassword ? 'border-red-300' : 'border-gray-300'}
+                  placeholder-navy-400 focus:outline-none focus:ring-navy-500 focus:border-navy-500
+                  ${errors.confirmPassword ? 'border-red-300' : 'border-navy-300'}
                 `}
                 placeholder="Confirm your password"
               />
@@ -435,15 +434,15 @@ const Register = () => {
               })}
               id="accept-terms"
               type="checkbox"
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              className="h-4 w-4 text-navy-900 focus:ring-navy-500 border-navy-300 rounded"
             />
-            <label htmlFor="accept-terms" className="ml-2 block text-sm text-gray-900">
+            <label htmlFor="accept-terms" className="ml-2 block text-sm text-navy-900">
               I agree to the{' '}
-              <a href="#" className="text-blue-600 hover:text-blue-500">
+              <a href="#" className="text-navy-900 hover:text-navy-700">
                 Terms and Conditions
               </a>{' '}
               and{' '}
-              <a href="#" className="text-blue-600 hover:text-blue-500">
+              <a href="#" className="text-navy-900 hover:text-navy-700">
                 Privacy Policy
               </a>
             </label>
@@ -462,10 +461,10 @@ const Register = () => {
               className={`
                 group relative w-full flex justify-center py-2 px-4 border border-transparent 
                 text-sm font-medium rounded-md text-white focus:outline-none focus:ring-2 
-                focus:ring-offset-2 focus:ring-blue-500
+                focus:ring-offset-2 focus:ring-navy-500
                 ${loading 
                   ? 'bg-gray-400 cursor-not-allowed' 
-                  : 'bg-blue-600 hover:bg-blue-700'
+                  : 'bg-navy-900 hover:bg-navy-800'
                 }
               `}
             >
@@ -482,11 +481,11 @@ const Register = () => {
 
           {/* Additional Links */}
           <div className="text-center">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-navy-600">
               Already have an account?{' '}
               <Link
                 to="/login"
-                className="font-medium text-blue-600 hover:text-blue-500"
+                className="font-medium text-navy-900 hover:text-navy-700"
               >
                 Sign in here
               </Link>
@@ -498,7 +497,7 @@ const Register = () => {
         <div className="text-center">
           <Link
             to="/"
-            className="text-sm text-gray-500 hover:text-gray-700"
+            className="text-sm text-navy-500 hover:text-navy-700"
           >
             ← Back to home
           </Link>

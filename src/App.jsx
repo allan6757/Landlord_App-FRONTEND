@@ -28,7 +28,7 @@ function App() {
     <Router>
       {/* Wrap with AuthProvider to share authentication state */}
       <AuthProvider>
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-navy-50">
           {/* Define all our application routes */}
           <Routes>
             {/* Public routes - accessible to everyone */}

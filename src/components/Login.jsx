@@ -98,16 +98,16 @@ const Login = () => {
         {/* Header */}
         <div className="text-center">
           <div className="flex justify-center">
-            <Building2 className="h-12 w-12 text-blue-600" />
+            <Building2 className="h-12 w-12 text-navy-900" />
           </div>
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-            Sign in to your account
+          <h2 className="mt-6 text-3xl font-extrabold text-navy-900">
+            Sign In
           </h2>
-          <p className="mt-2 text-sm text-gray-600">
+          <p className="mt-2 text-sm text-navy-600">
             Or{' '}
             <Link
               to="/register"
-              className="font-medium text-blue-600 hover:text-blue-500"
+              className="font-medium text-navy-900 hover:text-navy-700"
             >
               create a new account
             </Link>
@@ -130,20 +130,13 @@ const Login = () => {
             </div>
           )}
 
-          {/* Demo Credentials Info */}
-          <div className="rounded-md bg-blue-50 p-4">
-            <div className="text-sm text-blue-800">
-              <p className="font-medium mb-2">Demo Credentials:</p>
-              <p>Landlord: landlord@test.com / password123</p>
-              <p>Tenant: tenant@test.com / password123</p>
-            </div>
-          </div>
+
 
           <div className="space-y-4">
             {/* Email Field */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email address
+              <label htmlFor="email" className="block text-sm font-medium text-navy-700">
+                Email Address
               </label>
               <div className="mt-1 relative">
                 <input
@@ -158,8 +151,8 @@ const Login = () => {
                   autoComplete="email"
                   className={`
                     appearance-none block w-full px-3 py-2 pl-10 border rounded-md 
-                    placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500
-                    ${errors.email ? 'border-red-300' : 'border-gray-300'}
+                    placeholder-navy-400 focus:outline-none focus:ring-navy-500 focus:border-navy-500
+                    ${errors.email ? 'border-red-300' : 'border-navy-300'}
                   `}
                   placeholder="Enter your email"
                 />
@@ -175,7 +168,7 @@ const Login = () => {
 
             {/* Password Field */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="password" className="block text-sm font-medium text-navy-700">
                 Password
               </label>
               <div className="mt-1 relative">
@@ -191,8 +184,8 @@ const Login = () => {
                   autoComplete="current-password"
                   className={`
                     appearance-none block w-full px-3 py-2 pl-10 pr-10 border rounded-md 
-                    placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500
-                    ${errors.password ? 'border-red-300' : 'border-gray-300'}
+                    placeholder-navy-400 focus:outline-none focus:ring-navy-500 focus:border-navy-500
+                    ${errors.password ? 'border-red-300' : 'border-navy-300'}
                   `}
                   placeholder="Enter your password"
                 />
@@ -227,16 +220,16 @@ const Login = () => {
                 id="remember-me"
                 name="remember-me"
                 type="checkbox"
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                className="h-4 w-4 text-navy-900 focus:ring-navy-500 border-navy-300 rounded"
               />
-              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
+              <label htmlFor="remember-me" className="ml-2 block text-sm text-navy-900">
                 Remember me
               </label>
             </div>
 
             <div className="text-sm">
-              <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
-                Forgot your password?
+              <a href="#" className="font-medium text-navy-900 hover:text-navy-700">
+                Forgot password?
               </a>
             </div>
           </div>
@@ -249,10 +242,10 @@ const Login = () => {
               className={`
                 group relative w-full flex justify-center py-2 px-4 border border-transparent 
                 text-sm font-medium rounded-md text-white focus:outline-none focus:ring-2 
-                focus:ring-offset-2 focus:ring-blue-500
+                focus:ring-offset-2 focus:ring-navy-500
                 ${loading 
                   ? 'bg-gray-400 cursor-not-allowed' 
-                  : 'bg-blue-600 hover:bg-blue-700'
+                  : 'bg-navy-900 hover:bg-navy-800'
                 }
               `}
             >
@@ -269,11 +262,11 @@ const Login = () => {
 
           {/* Additional Links */}
           <div className="text-center">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-navy-600">
               Don't have an account?{' '}
               <Link
                 to="/register"
-                className="font-medium text-blue-600 hover:text-blue-500"
+                className="font-medium text-navy-900 hover:text-navy-700"
               >
                 Sign up here
               </Link>
@@ -285,7 +278,7 @@ const Login = () => {
         <div className="text-center">
           <Link
             to="/"
-            className="text-sm text-gray-500 hover:text-gray-700"
+            className="text-sm text-navy-500 hover:text-navy-700"
           >
             ← Back to home
           </Link>
