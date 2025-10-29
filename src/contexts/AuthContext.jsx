@@ -93,9 +93,10 @@ export const AuthProvider = ({ children }) => {
       const data = await response.json();
       console.log('Login response data:', data);
       
-      if (response.ok && data.access_token) {
+      if (response.ok && (data.token || data.access_token)) {
+        const token = data.token || data.access_token;
         localStorage.setItem('user', JSON.stringify(data.user));
-        localStorage.setItem('auth_token', data.access_token);
+        localStorage.setItem('auth_token', token);
         setUser(data.user);
         return { success: true };
       } else {
@@ -144,9 +145,10 @@ export const AuthProvider = ({ children }) => {
       const data = await response.json();
       console.log('Register response data:', data);
       
-      if (response.ok && data.access_token) {
+      if (response.ok && (data.token || data.access_token)) {
+        const token = data.token || data.access_token;
         localStorage.setItem('user', JSON.stringify(data.user));
-        localStorage.setItem('auth_token', data.access_token);
+        localStorage.setItem('auth_token', token);
         setUser(data.user);
         return { success: true };
       } else {

@@ -1,7 +1,7 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://landlord-app-backend-1eph.onrender.com'
 
 const getAuthHeaders = () => {
-  const token = localStorage.getItem('token')
+  const token = localStorage.getItem('auth_token')
   return {
     'Content-Type': 'application/json',
     ...(token && { 'Authorization': `Bearer ${token}` })
@@ -47,7 +47,7 @@ export const api = {
     return handleResponse(response)
   },
   upload: async (endpoint, formData) => {
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem('auth_token')
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       method: 'POST',
       headers: {
@@ -63,8 +63,8 @@ export const api = {
 export const auth = {
   login: async (email, password) => {
     const data = await api.post('/api/auth/login', { email, password })
-    if (data.token) {
-      localStorage.setItem('token', data.token)
+    if (data.access_token) {
+      localStorage.setItem('auth_token', data.access_token)
       localStorage.setItem('user', JSON.stringify(data.user))
     }
     return data
@@ -73,7 +73,7 @@ export const auth = {
     return api.post('/api/auth/register', userData)
   },
   logout: () => {
-    localStorage.removeItem('token')
+    localStorage.removeItem('auth_token')
     localStorage.removeItem('user')
   },
   getProfile: () => api.get('/api/auth/profile'),
