@@ -83,26 +83,7 @@ export const AuthProvider = ({ children }) => {
     try {
       console.log('Attempting login with:', { email });
       
-      // Demo credentials fallback
-      const demoCredentials = {
-        'demouser': { password: 'demo123', role: 'tenant', name: 'Demo User' },
-        'admin': { password: 'admin2024', role: 'landlord', name: 'Admin User' }
-      };
-      
-      // Check for demo credentials first
-      if (demoCredentials[email] && demoCredentials[email].password === password) {
-        const user = {
-          id: email === 'admin' ? 1 : 2,
-          email: email,
-          name: demoCredentials[email].name,
-          role: demoCredentials[email].role
-        };
-        
-        localStorage.setItem('user', JSON.stringify(user));
-        localStorage.setItem('auth_token', 'demo_token_' + Date.now());
-        setUser(user);
-        return { success: true };
-      }
+
       
       const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://landlord-app-backend-1eph.onrender.com'}/api/auth/login`, {
         method: 'POST',
@@ -146,20 +127,7 @@ export const AuthProvider = ({ children }) => {
    */
   const register = async (userData) => {
     try {
-      // For demo purposes, allow registration with mock data
-      if (userData.email && userData.password && userData.role) {
-        const user = {
-          id: Date.now(),
-          email: userData.email,
-          name: `${userData.firstName} ${userData.lastName}`,
-          role: userData.role
-        };
-        
-        localStorage.setItem('user', JSON.stringify(user));
-        localStorage.setItem('auth_token', 'demo_token_' + Date.now());
-        setUser(user);
-        return { success: true };
-      }
+
       
       const payload = {
         first_name: userData.firstName,

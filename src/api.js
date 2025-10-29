@@ -21,8 +21,7 @@ export const api = {
   get: async (endpoint) => {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       method: 'GET',
-      headers: getAuthHeaders(),
-      credentials: 'include'
+      headers: getAuthHeaders()
     })
     return handleResponse(response)
   },
@@ -30,8 +29,7 @@ export const api = {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       method: 'POST',
       headers: getAuthHeaders(),
-      body: JSON.stringify(data),
-      credentials: 'include'
+      body: JSON.stringify(data)
     })
     return handleResponse(response)
   },
