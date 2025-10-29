@@ -87,7 +87,7 @@ const Login = () => {
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-navy-800"></div>
       </div>
     );
   }
@@ -98,7 +98,7 @@ const Login = () => {
         {/* Header */}
         <div className="text-center">
           <div className="flex justify-center">
-            <Building2 className="h-12 w-12 text-blue-600" />
+            <Building2 className="h-12 w-12 text-navy-800" />
           </div>
           <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
             Sign in to your account
@@ -107,7 +107,7 @@ const Login = () => {
             Or{' '}
             <Link
               to="/register"
-              className="font-medium text-blue-600 hover:text-blue-500"
+              className="font-medium text-navy-800 hover:text-navy-700"
             >
               create a new account
             </Link>
@@ -130,14 +130,7 @@ const Login = () => {
             </div>
           )}
 
-          {/* Demo Credentials Info */}
-          <div className="rounded-md bg-blue-50 p-4">
-            <div className="text-sm text-blue-800">
-              <p className="font-medium mb-2">Demo Credentials:</p>
-              <p>Landlord: landlord@test.com / password123</p>
-              <p>Tenant: tenant@test.com / password123</p>
-            </div>
-          </div>
+
 
           <div className="space-y-4">
             {/* Email Field */}
@@ -158,7 +151,7 @@ const Login = () => {
                   autoComplete="email"
                   className={`
                     appearance-none block w-full px-3 py-2 pl-10 border rounded-md 
-                    placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500
+                    placeholder-gray-400 focus:outline-none focus:ring-navy-800 focus:border-navy-800
                     ${errors.email ? 'border-red-300' : 'border-gray-300'}
                   `}
                   placeholder="Enter your email"
@@ -191,7 +184,7 @@ const Login = () => {
                   autoComplete="current-password"
                   className={`
                     appearance-none block w-full px-3 py-2 pl-10 pr-10 border rounded-md 
-                    placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500
+                    placeholder-gray-400 focus:outline-none focus:ring-navy-800 focus:border-navy-800
                     ${errors.password ? 'border-red-300' : 'border-gray-300'}
                   `}
                   placeholder="Enter your password"
@@ -227,7 +220,7 @@ const Login = () => {
                 id="remember-me"
                 name="remember-me"
                 type="checkbox"
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                className="h-4 w-4 text-navy-800 focus:ring-navy-800 border-gray-300 rounded"
               />
               <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
                 Remember me
@@ -235,7 +228,7 @@ const Login = () => {
             </div>
 
             <div className="text-sm">
-              <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
+              <a href="#" className="font-medium text-navy-800 hover:text-navy-700">
                 Forgot your password?
               </a>
             </div>
@@ -249,10 +242,10 @@ const Login = () => {
               className={`
                 group relative w-full flex justify-center py-2 px-4 border border-transparent 
                 text-sm font-medium rounded-md text-white focus:outline-none focus:ring-2 
-                focus:ring-offset-2 focus:ring-blue-500
+                focus:ring-offset-2 focus:ring-navy-800
                 ${loading 
                   ? 'bg-gray-400 cursor-not-allowed' 
-                  : 'bg-blue-600 hover:bg-blue-700'
+                  : 'bg-navy-800 hover:bg-navy-900'
                 }
               `}
             >
@@ -273,7 +266,7 @@ const Login = () => {
               Don't have an account?{' '}
               <Link
                 to="/register"
-                className="font-medium text-blue-600 hover:text-blue-500"
+                className="font-medium text-navy-800 hover:text-navy-700"
               >
                 Sign up here
               </Link>

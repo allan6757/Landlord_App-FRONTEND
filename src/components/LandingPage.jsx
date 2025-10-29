@@ -50,19 +50,19 @@ const LandingPage = () => {
    */
   const features = [
     {
-      icon: <Building2 className="h-8 w-8 text-blue-600" />,
+      icon: <Building2 className="h-8 w-8 text-navy-800" />,
       title: "Property Management",
       description: "Easily manage multiple properties, track rent payments, and maintain tenant records.",
       benefits: ["Add/Edit Properties", "Tenant Management", "Maintenance Tracking"]
     },
     {
-      icon: <CreditCard className="h-8 w-8 text-green-600" />,
+      icon: <CreditCard className="h-8 w-8 text-navy-600" />,
       title: "M-Pesa Integration",
       description: "Seamless rent payments through M-Pesa STK Push for convenient transactions.",
       benefits: ["STK Push Payments", "Payment History", "Automated Receipts"]
     },
     {
-      icon: <MessageSquare className="h-8 w-8 text-purple-600" />,
+      icon: <MessageSquare className="h-8 w-8 text-navy-700" />,
       title: "Real-time Chat",
       description: "Direct communication between landlords and tenants for quick issue resolution.",
       benefits: ["Instant Messaging", "File Sharing", "Notification System"]
@@ -77,27 +77,27 @@ const LandingPage = () => {
       role: 'landlord',
       title: 'I am a Landlord',
       description: 'Manage properties, collect rent, and communicate with tenants',
-      icon: <Building2 className="h-12 w-12 text-blue-600" />,
-      color: 'border-blue-500 hover:bg-blue-50'
+      icon: <Building2 className="h-12 w-12 text-navy-800" />,
+      color: 'border-navy-600 hover:bg-navy-50'
     },
     {
       role: 'tenant',
       title: 'I am a Tenant',
       description: 'Pay rent, communicate with landlord, and manage your tenancy',
-      icon: <Users className="h-12 w-12 text-green-600" />,
-      color: 'border-green-500 hover:bg-green-50'
+      icon: <Users className="h-12 w-12 text-navy-700" />,
+      color: 'border-navy-500 hover:bg-navy-50'
     }
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-br from-navy-50 to-navy-100">
       {/* Navigation Header */}
       <nav className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <div className="flex items-center">
-              <Building2 className="h-8 w-8 text-blue-600" />
+              <Building2 className="h-8 w-8 text-navy-800" />
               <span className="ml-2 text-xl font-bold text-gray-900">PropManager</span>
             </div>
             
@@ -105,13 +105,13 @@ const LandingPage = () => {
             <div className="flex items-center space-x-4">
               <Link 
                 to="/login" 
-                className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium"
+                className="text-gray-700 hover:text-navy-800 px-3 py-2 rounded-md text-sm font-medium"
               >
                 Sign In
               </Link>
               <Link 
                 to="/register" 
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                className="bg-navy-800 hover:bg-navy-900 text-white px-4 py-2 rounded-md text-sm font-medium"
               >
                 Get Started
               </Link>
@@ -125,7 +125,7 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
             Modern Property
-            <span className="text-blue-600"> Management</span>
+            <span className="text-navy-800"> Management</span>
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
             Streamline your property management with our comprehensive platform. 
@@ -140,7 +140,7 @@ const LandingPage = () => {
                 onClick={() => handleRoleSelection(roleOption.role)}
                 className={`
                   p-8 bg-white rounded-xl border-2 cursor-pointer transition-all duration-200 
-                  ${roleOption.color} ${selectedRole === roleOption.role ? 'ring-2 ring-offset-2' : ''}
+                  ${roleOption.color} ${selectedRole === roleOption.role ? 'ring-2 ring-navy-800 ring-offset-2' : ''}
                 `}
               >
                 <div className="flex flex-col items-center text-center">
@@ -151,7 +151,7 @@ const LandingPage = () => {
                   <p className="text-gray-600 mb-4">
                     {roleOption.description}
                   </p>
-                  <button className="flex items-center text-blue-600 font-medium hover:text-blue-700">
+                  <button className="flex items-center text-navy-800 font-medium hover:text-navy-900">
                     Get Started
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </button>
@@ -192,7 +192,7 @@ const LandingPage = () => {
                 <ul className="space-y-2">
                   {feature.benefits.map((benefit, benefitIndex) => (
                     <li key={benefitIndex} className="flex items-center text-sm text-gray-700">
-                      <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                      <CheckCircle className="h-4 w-4 text-navy-600 mr-2" />
                       {benefit}
                     </li>
                   ))}
@@ -235,7 +235,7 @@ const LandingPage = () => {
             
             <div className="flex flex-col items-center">
               <div className="bg-white p-4 rounded-lg shadow-sm mb-2">
-                <Shield className="h-8 w-8 text-green-600" />
+                <Shield className="h-8 w-8 text-navy-700" />
               </div>
               <span className="text-sm font-medium text-gray-700">Secure</span>
             </div>
@@ -244,25 +244,25 @@ const LandingPage = () => {
       </section>
 
       {/* Call to Action */}
-      <section className="py-20 bg-blue-600">
+      <section className="py-20 bg-navy-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             Ready to Get Started?
           </h2>
-          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-navy-100 mb-8 max-w-2xl mx-auto">
             Join thousands of landlords and tenants who trust PropManager for their property management needs.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               to="/register"
-              className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+              className="bg-white text-navy-800 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
             >
               Create Account
             </Link>
             <Link
               to="/login"
-              className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors"
+              className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-navy-800 transition-colors"
             >
               Sign In
             </Link>
@@ -275,7 +275,7 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center mb-4 md:mb-0">
-              <Building2 className="h-8 w-8 text-blue-400" />
+              <Building2 className="h-8 w-8 text-navy-400" />
               <span className="ml-2 text-xl font-bold">PropManager</span>
             </div>
             
