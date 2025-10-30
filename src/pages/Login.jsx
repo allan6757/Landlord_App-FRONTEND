@@ -73,7 +73,9 @@ const Login = () => {
           </button>
         </form>
         <div className="text-sm text-gray-600 text-center">
-          Test: landlord@example.com / password123
+          <p>Demo Credentials:</p>
+          <p>Landlord: landlord@example.com / password123</p>
+          <p>Tenant: tenant@example.com / password123</p>
         </div>
         <div className="text-center">
           <Link to="/register" className="text-blue-600 hover:text-blue-500">
