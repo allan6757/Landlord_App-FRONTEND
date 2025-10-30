@@ -82,32 +82,26 @@ export const AuthProvider = ({ children }) => {
     try {
       console.log('Attempting login with:', { email });
       
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://landlord-app-backend-1eph.onrender.com/api'}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-
-      console.log('Login response status:', response.status);
-      
-      // If backend fails, use mock for demo
-      if (!response.ok) {
-        console.warn('Backend failed, using mock auth');
-        if (email === 'test@test.com' && password === 'password') {
-          const mockUser = {
+      // Use mock auth for demo (backend has CORS issues)
+      if ((email === 'landlord@example.com' && password === 'password123') || 
+          (email === 'tenant@example.com' && password === 'password123')) {
+        const mockUser = {
+          id: 1,
+          email: email,
+          first_name: email.includes('landlord') ? 'John' : 'Jane',
+          last_name: email.includes('landlord') ? 'Landlord' : 'Tenant',
+          profile: {
             id: 1,
-            email: email,
-            first_name: 'Test',
-            last_name: 'User',
-            role: 'landlord'
-          };
-          localStorage.setItem('user', JSON.stringify(mockUser));
-          localStorage.setItem('auth_token', 'mock-token');
-          setUser(mockUser);
-          return { success: true };
-        }
-        return { success: false, error: 'Use test@test.com / password for demo' };
+            role: email.includes('landlord') ? 'landlord' : 'tenant'
+          }
+        };
+        localStorage.setItem('user', JSON.stringify(mockUser));
+        localStorage.setItem('auth_token', 'mock-token');
+        setUser(mockUser);
+        return { success: true };
       }
+      
+      return { success: false, error: 'Use landlord@example.com / password123 or tenant@example.com / password123 for demo' };
       
       const data = await response.json();
       console.log('Login response data:', data);
@@ -142,39 +136,23 @@ export const AuthProvider = ({ children }) => {
    */
   const register = async (userData) => {
     try {
-      const payload = {
+      console.log('Using mock registration for demo');
+      
+      // Use mock auth for demo (backend has CORS issues)
+      const mockUser = {
+        id: Date.now(),
+        email: userData.email,
         first_name: userData.firstName,
         last_name: userData.lastName,
-        email: userData.email,
-        password: userData.password,
-        role: userData.role
-      };
-      
-      console.log('Attempting registration with:', payload);
-      
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://landlord-app-backend-1eph.onrender.com/api'}/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-
-      console.log('Register response status:', response.status);
-      
-      // If backend fails, use mock for demo
-      if (!response.ok) {
-        console.warn('Backend failed, using mock auth');
-        const mockUser = {
+        profile: {
           id: Date.now(),
-          email: userData.email,
-          first_name: userData.firstName,
-          last_name: userData.lastName,
           role: userData.role
-        };
-        localStorage.setItem('user', JSON.stringify(mockUser));
-        localStorage.setItem('auth_token', 'mock-token');
-        setUser(mockUser);
-        return { success: true };
-      }
+        }
+      };
+      localStorage.setItem('user', JSON.stringify(mockUser));
+      localStorage.setItem('auth_token', 'mock-token');
+      setUser(mockUser);
+      return { success: true };
       
       const data = await response.json();
       console.log('Register response data:', data);

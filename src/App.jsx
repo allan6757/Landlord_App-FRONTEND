@@ -17,9 +17,9 @@ import { AuthProvider } from './contexts/AuthContext';
 
 // Import our page components
 import LandingPage from './components/LandingPage';
-import Login from './components/Login';
-import Register from './components/Register';
-import Dashboard from './components/Dashboard';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
