@@ -1,0 +1,290 @@
+/**
+ * Landing Page Component - Property Management System
+ * 
+ * This is the main landing page that showcases our property management features.
+ * It includes role selection, feature highlights, and navigation to login/register.
+ * 
+ * Features Demonstrated:
+ * - Role selection (Landlord/Tenant)
+ * - Feature showcase (M-Pesa Integration, Property Management, Real-time Chat)
+ * - Responsive design with Tailwind CSS
+ * - React Router navigation
+ * 
+ * Learning Goals:
+ * - Component composition and structure
+ * - Tailwind CSS for styling
+ * - React Router for navigation
+ * - Props and state management
+ */
+
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { 
+  Building2, 
+  MessageSquare, 
+  CreditCard, 
+  Users, 
+  Shield, 
+  Smartphone,
+  ArrowRight,
+  CheckCircle
+} from 'lucide-react';
+
+const LandingPage = () => {
+  // State for selected user role
+  const [selectedRole, setSelectedRole] = useState('');
+  const navigate = useNavigate();
+
+  /**
+   * Handle role selection and navigation
+   * @param {string} role - Selected user role (landlord/tenant)
+   */
+  const handleRoleSelection = (role) => {
+    setSelectedRole(role);
+    // Navigate to registration with role pre-selected
+    navigate('/register', { state: { role } });
+  };
+
+  /**
+   * Feature data for the showcase section
+   */
+  const features = [
+    {
+      icon: <Building2 className="h-8 w-8 text-navy-900" />,
+      title: "Property Management",
+      description: "Comprehensive property portfolio management with tenant tracking and maintenance oversight.",
+      benefits: ["Property Portfolio", "Tenant Management", "Maintenance Tracking"]
+    },
+    {
+      icon: <CreditCard className="h-8 w-8 text-navy-900" />,
+      title: "Payment Processing",
+      description: "Secure payment processing with M-Pesa integration for seamless transactions.",
+      benefits: ["Secure Payments", "Transaction History", "Automated Processing"]
+    },
+    {
+      icon: <MessageSquare className="h-8 w-8 text-navy-900" />,
+      title: "Communication Hub",
+      description: "Centralized communication platform for property management correspondence.",
+      benefits: ["Secure Messaging", "Document Sharing", "Notification System"]
+    }
+  ];
+
+  /**
+   * User role options for selection
+   */
+  const userRoles = [
+    {
+      role: 'landlord',
+      title: 'Property Owner',
+      description: 'Manage properties, collect rent, and oversee tenant relations',
+      icon: <Building2 className="h-12 w-12 text-navy-900" />
+    },
+    {
+      role: 'tenant',
+      title: 'Tenant',
+      description: 'Access payment portal and communicate with property management',
+      icon: <Users className="h-12 w-12 text-navy-900" />
+    }
+  ];
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-navy-50 to-navy-100">
+      {/* Navigation Header */}
+      <nav className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            {/* Logo */}
+            <div className="flex items-center">
+              <Building2 className="h-8 w-8 text-navy-900" />
+              <span className="ml-2 text-xl font-bold text-navy-900">PropertyHub</span>
+            </div>
+            
+            {/* Navigation Links */}
+            <div className="flex items-center space-x-4">
+              <Link 
+                to="/login" 
+                className="text-navy-700 hover:text-navy-900 px-3 py-2 rounded-md text-sm font-medium"
+              >
+                Sign In
+              </Link>
+              <Link 
+                to="/register" 
+                className="bg-navy-900 hover:bg-navy-800 text-white px-4 py-2 rounded-md text-sm font-medium"
+              >
+                Get Started
+              </Link>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-4xl md:text-6xl font-bold text-navy-900 mb-6">
+            Professional Property
+            <span className="text-navy-900"> Management</span>
+          </h1>
+          <p className="text-xl text-navy-700 mb-8 max-w-3xl mx-auto">
+            Comprehensive property management solution for landlords and tenants. 
+            Streamline operations, automate payments, and enhance communication.
+          </p>
+          
+          {/* Role Selection Cards */}
+          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-12">
+            {userRoles.map((roleOption) => (
+              <div
+                key={roleOption.role}
+                onClick={() => handleRoleSelection(roleOption.role)}
+                className={`
+                  p-8 bg-white rounded-xl border-2 cursor-pointer transition-all duration-200 
+                  border-navy-300 hover:border-navy-500 hover:bg-navy-50 ${selectedRole === roleOption.role ? 'ring-2 ring-offset-2 ring-navy-500' : ''}
+                `}
+              >
+                <div className="flex flex-col items-center text-center">
+                  {roleOption.icon}
+                  <h3 className="text-xl font-semibold text-navy-900 mt-4 mb-2">
+                    {roleOption.title}
+                  </h3>
+                  <p className="text-navy-600 mb-4">
+                    {roleOption.description}
+                  </p>
+                  <button className="flex items-center text-navy-900 font-medium hover:text-navy-700">
+                    Get Started
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-navy-900 mb-4">
+              Complete Solution
+            </h2>
+            <p className="text-xl text-navy-700 max-w-2xl mx-auto">
+              Professional-grade tools for comprehensive property management operations
+            </p>
+          </div>
+
+          {/* Feature Cards */}
+          <div className="grid md:grid-cols-3 gap-8">
+            {features.map((feature, index) => (
+              <div key={index} className="bg-navy-50 rounded-xl p-8 hover:shadow-lg transition-shadow">
+                <div className="mb-4">
+                  {feature.icon}
+                </div>
+                <h3 className="text-xl font-semibold text-navy-900 mb-3">
+                  {feature.title}
+                </h3>
+                <p className="text-navy-700 mb-4">
+                  {feature.description}
+                </p>
+                
+                {/* Feature Benefits */}
+                <ul className="space-y-2">
+                  {feature.benefits.map((benefit, benefitIndex) => (
+                    <li key={benefitIndex} className="flex items-center text-sm text-navy-700">
+                      <CheckCircle className="h-4 w-4 text-navy-900 mr-2" />
+                      {benefit}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Technology Stack Section */}
+      <section className="py-20 bg-navy-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl font-bold text-navy-900 mb-8">
+            Enterprise Technology Stack
+          </h2>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {/* Technology badges */}
+            <div className="flex flex-col items-center">
+              <div className="bg-white p-4 rounded-lg shadow-sm mb-2">
+                <span className="text-2xl">⚛️</span>
+              </div>
+              <span className="text-sm font-medium text-navy-700">React</span>
+            </div>
+            
+            <div className="flex flex-col items-center">
+              <div className="bg-white p-4 rounded-lg shadow-sm mb-2">
+                <span className="text-2xl">🐍</span>
+              </div>
+              <span className="text-sm font-medium text-navy-700">Flask</span>
+            </div>
+            
+            <div className="flex flex-col items-center">
+              <div className="bg-white p-4 rounded-lg shadow-sm mb-2">
+                <span className="text-2xl">💳</span>
+              </div>
+              <span className="text-sm font-medium text-navy-700">M-Pesa</span>
+            </div>
+            
+            <div className="flex flex-col items-center">
+              <div className="bg-white p-4 rounded-lg shadow-sm mb-2">
+                <Shield className="h-8 w-8 text-navy-900" />
+              </div>
+              <span className="text-sm font-medium text-navy-700">Secure</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Call to Action */}
+      <section className="py-20 bg-navy-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            Get Started Today
+          </h2>
+          <p className="text-xl text-navy-200 mb-8 max-w-2xl mx-auto">
+            Join property owners and tenants using PropertyHub for professional property management.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              to="/register"
+              className="bg-white text-navy-900 px-8 py-3 rounded-lg font-semibold hover:bg-navy-100 transition-colors"
+            >
+              Create Account
+            </Link>
+            <Link
+              to="/login"
+              className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-navy-900 transition-colors"
+            >
+              Sign In
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-navy-950 text-white py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="flex items-center mb-4 md:mb-0">
+              <Building2 className="h-8 w-8 text-white" />
+              <span className="ml-2 text-xl font-bold">PropertyHub</span>
+            </div>
+            
+            <div className="text-navy-400 text-sm">
+              © 2024 PropertyHub. Professional Property Management Solutions.
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default LandingPage;

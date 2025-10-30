@@ -1,87 +1,54 @@
+/**
+ * Main App Component
+ * 
+ * This is the root component of our Property Management Application.
+ * It handles routing between different pages and provides authentication context.
+ * 
+ * Learning Goals Demonstrated:
+ * - React Router v6 for navigation
+ * - Context API for state management
+ * - Component composition
+ * - Conditional rendering
+ */
+
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
-import ProtectedRoute from './components/common/ProtectedRoute';
-import Header from './components/layout/Header';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Dashboard from './pages/Dashboard';
-import Properties from './pages/Properties';
-import PropertyDetail from './pages/PropertyDetail';
-import CreateProperty from './pages/CreateProperty';
-import Payments from './pages/Payments';
-import Chat from './pages/Chat';
-import Profile from './pages/Profile';
+
+// Import our page components
+import LandingPage from './components/LandingPage';
+import Login from './components/Login';
+import Register from './components/Register';
+import Dashboard from './components/Dashboard';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
+    // Wrap entire app with Router for navigation
     <Router>
+      {/* Wrap with AuthProvider to share authentication state */}
       <AuthProvider>
-        <div className="min-h-screen bg-gray-50">
-          <Header />
-          <main>
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route 
-                path="/dashboard" 
-                element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/properties" 
-                element={
-                  <ProtectedRoute>
-                    <Properties />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/properties/new" 
-                element={
-                  <ProtectedRoute>
-                    <CreateProperty />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/properties/:id" 
-                element={
-                  <ProtectedRoute>
-                    <PropertyDetail />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/payments" 
-                element={
-                  <ProtectedRoute>
-                    <Payments />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/chat" 
-                element={
-                  <ProtectedRoute>
-                    <Chat />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/profile" 
-                element={
-                  <ProtectedRoute>
-                    <Profile />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-            </Routes>
-          </main>
+        <div className="min-h-screen bg-navy-50">
+          {/* Define all our application routes */}
+          <Routes>
+            {/* Public routes - accessible to everyone */}
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            
+            {/* Protected routes - only for authenticated users */}
+            <Route 
+              path="/dashboard" 
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              } 
+            />
+            
+            {/* Redirect any unknown routes to home */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
         </div>
       </AuthProvider>
     </Router>
