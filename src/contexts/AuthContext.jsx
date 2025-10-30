@@ -82,7 +82,7 @@ export const AuthProvider = ({ children }) => {
     try {
       console.log('Attempting login with:', { email });
       
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://landlord-app-backend-1eph.onrender.com'}/api/auth/login`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://landlord-app-backend-1eph.onrender.com/api'}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
@@ -152,7 +152,7 @@ export const AuthProvider = ({ children }) => {
       
       console.log('Attempting registration with:', payload);
       
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://landlord-app-backend-1eph.onrender.com'}/api/auth/register`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://landlord-app-backend-1eph.onrender.com/api'}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -236,6 +236,30 @@ export const AuthProvider = ({ children }) => {
   };
 
   /**
+   * Get user role
+   * @returns {string|null} - User role or null
+   */
+  const getUserRole = () => {
+    return user?.role || null;
+  };
+
+  /**
+   * Check if user is landlord
+   * @returns {boolean} - True if landlord
+   */
+  const isLandlord = () => {
+    return getUserRole() === 'landlord';
+  };
+
+  /**
+   * Check if user is tenant
+   * @returns {boolean} - True if tenant
+   */
+  const isTenant = () => {
+    return getUserRole() === 'tenant';
+  };
+
+  /**
    * Get authentication token
    * @returns {string|null} - JWT token or null
    */
@@ -257,6 +281,9 @@ export const AuthProvider = ({ children }) => {
     // Utility methods
     isAuthenticated,
     hasRole,
+    getUserRole,
+    isLandlord,
+    isTenant,
     getToken
   };
 

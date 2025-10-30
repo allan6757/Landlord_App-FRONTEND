@@ -33,9 +33,9 @@ const Dashboard = () => {
   };
 
   const userProperties = properties.filter(property => 
-    user.profile.role === 'landlord' 
-      ? property.landlord_id === user.profile.id
-      : property.tenant_id === user.profile.id
+    user.role === 'landlord' 
+      ? property.landlord_id === user.id
+      : property.tenant_id === user.id
   );
 
   const recentPayments = payments.slice(0, 5);
@@ -51,7 +51,7 @@ const Dashboard = () => {
               Welcome back, {user.first_name}!
             </h1>
             <p className="mt-2 text-gray-600">
-              {user.profile.role === 'landlord' 
+              {user.role === 'landlord' 
                 ? 'Manage your rental properties and tenants'
                 : 'View your rental information and make payments'
               }

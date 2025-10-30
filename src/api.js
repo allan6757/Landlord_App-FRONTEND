@@ -1,7 +1,7 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://landlord-app-backend-1eph.onrender.com'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://landlord-app-backend-1eph.onrender.com/api'
 
 const getAuthHeaders = () => {
-  const token = localStorage.getItem('token')
+  const token = localStorage.getItem('auth_token')
   return {
     'Content-Type': 'application/json',
     ...(token && { 'Authorization': `Bearer ${token}` })
@@ -43,27 +43,34 @@ export const api = {
 // Auth functions
 export const auth = {
   login: async (email, password) => {
-    const data = await api.post('/api/auth/login', { email, password })
+    const data = await api.post('/auth/login', { email, password })
     if (data.access_token) {
-      localStorage.setItem('token', data.access_token)
+      localStorage.setItem('auth_token', data.access_token)
+      localStorage.setItem('user', JSON.stringify(data.user))
     }
     return data
   },
   register: async (userData) => {
-    return api.post('/api/auth/register', userData)
+    const data = await api.post('/auth/register', userData)
+    if (data.access_token) {
+      localStorage.setItem('auth_token', data.access_token)
+      localStorage.setItem('user', JSON.stringify(data.user))
+    }
+    return data
   },
   logout: () => {
-    localStorage.removeItem('token')
+    localStorage.removeItem('auth_token')
+    localStorage.removeItem('user')
   }
 }
 
 // Properties functions
 export const properties = {
-  getAll: () => api.get('/api/properties'),
-  getById: (id) => api.get(`/api/properties/${id}`),
-  create: (data) => api.post('/api/properties', data),
-  update: (id, data) => api.put(`/api/properties/${id}`, data),
-  delete: (id) => api.delete(`/api/properties/${id}`)
+  getAll: () => api.get('/properties'),
+  getById: (id) => api.get(`/properties/${id}`),
+  create: (data) => api.post('/properties', data),
+  update: (id, data) => api.put(`/properties/${id}`, data),
+  delete: (id) => api.delete(`/properties/${id}`)
 }
 
 export default API_BASE_URL
