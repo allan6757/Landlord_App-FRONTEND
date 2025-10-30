@@ -1,33 +1,55 @@
-import { api } from './api';
+import { api } from '../api';
 
+/**
+ * Chat Service - Handles real-time messaging with Socket.IO
+ * 
+ * Learning Goals Demonstrated:
+ * - WebSocket integration
+ * - Real-time communication
+ * - Event-driven architecture
+ */
 export const chatService = {
   async getConversations() {
     const response = await api.get('/api/conversations');
-    return response.data;
+    return response;
   },
 
   async getConversation(id) {
     const response = await api.get(`/api/conversations/${id}`);
-    return response.data;
+    return response;
   },
 
-  async createConversation(conversationData) {
-    const response = await api.post('/api/conversations', conversationData);
-    return response.data;
+  async createConversation(participantId) {
+    const response = await api.post('/api/conversations', {
+      participant_id: participantId
+    });
+    return response;
   },
 
   async getMessages(conversationId) {
     const response = await api.get(`/api/conversations/${conversationId}/messages`);
-    return response.data;
+    return response;
   },
 
-  async sendMessage(conversationId, messageData) {
-    const response = await api.post(`/api/conversations/${conversationId}/messages`, messageData);
-    return response.data;
+  async sendMessage(conversationId, content, isEmergency = false) {
+    const response = await api.post(`/api/conversations/${conversationId}/messages`, {
+      content: content,
+      is_emergency: isEmergency
+    });
+    return response;
   },
 
-  async markAsRead(conversationId) {
-    const response = await api.put(`/api/conversations/${conversationId}/read`);
-    return response.data;
+  // Broadcast chat functions
+  async joinBroadcast(broadcastId) {
+    const response = await api.post(`/api/broadcasts/${broadcastId}/join`);
+    return response;
   },
+
+  async sendBroadcastMessage(broadcastId, content, isEmergency = false) {
+    const response = await api.post(`/api/broadcasts/${broadcastId}/messages`, {
+      content: content,
+      is_emergency: isEmergency
+    });
+    return response;
+  }
 };

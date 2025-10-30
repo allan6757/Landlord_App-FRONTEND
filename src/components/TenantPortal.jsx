@@ -1,76 +1,412 @@
-import React, { useState } from 'react';
-import { Home, CreditCard, MessageCircle, ArrowLeft, Calendar, CheckCircle, Clock, AlertCircle } from 'lucide-react';
-import STKPushPayment from './STKPushPayment.jsx';
-import Chat from './Chat.jsx';
+/**
+ * Tenant Portal Component - Property Management System
+ * 
+ * This component provides the main dashboard for tenants to view their unit,
+ * pay rent, communicate with landlord, and manage their account.
+ * 
+ * Features:
+ * - View unit details and bills breakdown
+ * - Pay rent via M-Pesa STK Push (full/partial)
+ * - Chat with landlord
+ * - Join apartment broadcasts
+ * - Emergency button for broadcasts
+ * - View payment receipts and pending balances
+ * 
+ * Learning Goals Demonstrated:
+ * - React Hooks and state management
+ * - Payment integration (M-Pesa)
+ * - Real-time chat with Socket.IO
+ * - Component composition
+ * - User experience design
+ */
 
-const TenantPortal = ({ onBack }) => {
-  const [activeTab, setActiveTab] = useState('overview');
-  const [showPayment, setShowPayment] = useState(false);
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../contexts/AuthContext';
+import { billService } from '../services/propertyService';
+import { paymentService } from '../services/paymentService';
+import { chatService } from '../services/chatService';
+import { 
+  Home, 
+  DollarSign, 
+  MessageSquare,
+  Receipt,
+  AlertTriangle,
+  CreditCard,
+  FileText,
+  Phone,
+  Calendar,
+  Users,
+  Bell
+} from 'lucide-react';
 
-  // Mock tenant data with bill breakdown
-  const tenantData = {
-    name: 'John Doe',
-    property: 'Sunset Apartments',
-    unit: 'A1',
-    monthlyRent: 25000,
-    nextDueDate: '2024-02-01',
-    landlord: 'Sarah Wilson',
-    address: '123 Main St, Nairobi',
-    billBreakdown: {
-      rent: 25000,
-      water: 1500,
-      electricity: 2000,
-      maintenance: 500,
-      total: 29000
-    }
-  };
+const TenantPortal = () => {
+  // Authentication context
+  const { user } = useAuth();
+  
+  // State management for tenant data
+  const [unitDetails, setUnitDetails] = useState(null);
+  const [bills, setBills] = useState(null);
+  const [payments, setPayments] = useState([]);
+  const [pendingBalance, setPendingBalance] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [paymentAmount, setPaymentAmount] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [paymentType, setPaymentType] = useState('full');
 
-  const [paymentHistory, setPaymentHistory] = useState([
-    { id: 1, amount: 25000, date: '2024-01-01', status: 'paid', method: 'M-Pesa', reference: 'MP240101001' },
-    { id: 2, amount: 25000, date: '2023-12-01', status: 'paid', method: 'M-Pesa', reference: 'MP231201001' },
-    { id: 3, amount: 25000, date: '2023-11-01', status: 'paid', method: 'M-Pesa', reference: 'MP231101001' },
-    { id: 4, amount: 25000, date: '2023-10-01', status: 'paid', method: 'M-Pesa', reference: 'MP231001001' }
-  ]);
-
-  const handlePaymentSuccess = (paymentData) => {
-    const newPayment = {
-      id: Date.now(),
-      amount: paymentData.amount,
-      date: new Date().toISOString().split('T')[0],
-      status: 'paid',
-      method: 'M-Pesa',
-      reference: paymentData.reference
+  /**
+   * Load tenant dashboard data
+   * Fetches unit details, bills, payments, and balances
+   */
+  useEffect(() => {
+    const loadTenantData = async () => {
+      try {
+        setLoading(true);
+        
+        // Load tenant bills and unit details
+        const billsResponse = await billService.getTenantBills(user.id);
+        if (billsResponse.success) {
+          setBills(billsResponse.data);
+          setUnitDetails(billsResponse.data.unit);
+        }
+        
+        // Load payment history
+        const paymentsResponse = await paymentService.getTenantReceipts(user.id);
+        if (paymentsResponse.success) {
+          setPayments(paymentsResponse.data || []);
+        }
+        
+        // Load pending balance
+        const balanceResponse = await paymentService.getPendingBalance(user.id);
+        if (balanceResponse.success) {
+          setPendingBalance(balanceResponse.data.balance || 0);
+        }
+        
+      } catch (error) {
+        console.error('Error loading tenant data:', error);
+      } finally {
+        setLoading(false);
+      }
     };
-    setPaymentHistory([newPayment, ...paymentHistory]);
-    setShowPayment(false);
-  };
 
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case 'paid': return <CheckCircle className="h-5 w-5 text-green-500" />;
-      case 'pending': return <Clock className="h-5 w-5 text-yellow-500" />;
-      case 'overdue': return <AlertCircle className="h-5 w-5 text-red-500" />;
-      default: return <Clock className="h-5 w-5 text-gray-500" />;
+    loadTenantData();
+  }, [user.id]);
+
+  /**
+   * Handle M-Pesa STK Push payment
+   * Initiates payment process with user's phone number
+   */
+  const handlePayment = async () => {
+    try {
+      if (!phoneNumber || !paymentAmount) {
+        alert('Please enter phone number and amount');
+        return;
+      }
+
+      const response = await paymentService.initiateSTKPush(
+        phoneNumber,
+        parseFloat(paymentAmount),
+        unitDetails.id,
+        paymentType
+      );
+
+      if (response.success) {
+        alert('Payment initiated! Please check your phone for M-Pesa prompt.');
+        setPaymentAmount('');
+        setPhoneNumber('');
+      } else {
+        alert('Payment failed: ' + response.message);
+      }
+    } catch (error) {
+      console.error('Payment error:', error);
+      alert('Payment failed. Please try again.');
     }
   };
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'paid': return 'bg-green-100 text-green-800';
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      case 'overdue': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+  /**
+   * Send emergency message to broadcast
+   * Alerts all apartment residents of emergency
+   */
+  const handleEmergency = async () => {
+    try {
+      const message = prompt('Describe the emergency:');
+      if (message) {
+        await chatService.sendBroadcastMessage(
+          unitDetails.property.broadcast_id,
+          message,
+          true // isEmergency flag
+        );
+        alert('Emergency alert sent to all residents!');
+      }
+    } catch (error) {
+      console.error('Emergency alert error:', error);
+      alert('Failed to send emergency alert.');
     }
   };
 
-  if (showPayment) {
+  /**
+   * Dashboard Overview Component
+   * Shows unit details and key information
+   */
+  const DashboardOverview = () => (
+    <div className="space-y-6">
+      {/* Unit Information Card */}
+      <div className="bg-white rounded-lg shadow-sm border p-6">
+        <div className="flex justify-between items-start mb-4">
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900">My Unit</h2>
+            <p className="text-gray-600">{unitDetails?.property?.name}</p>
+          </div>
+          <div className="text-right">
+            <p className="text-2xl font-bold text-blue-600">
+              Unit {unitDetails?.unit_number}
+            </p>
+            <p className="text-sm text-gray-600">{unitDetails?.unit_type}</p>
+          </div>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <p className="text-sm text-gray-600">Monthly Rent</p>
+            <p className="text-lg font-semibold text-gray-900">
+              KSh {(unitDetails?.rent || 0).toLocaleString()}
+            </p>
+          </div>
+          
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <p className="text-sm text-gray-600">Pending Balance</p>
+            <p className={`text-lg font-semibold ${
+              pendingBalance > 0 ? 'text-red-600' : 'text-green-600'
+            }`}>
+              KSh {pendingBalance.toLocaleString()}
+            </p>
+          </div>
+          
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <p className="text-sm text-gray-600">Next Due Date</p>
+            <p className="text-lg font-semibold text-gray-900">
+              {bills?.next_due_date || 'N/A'}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Bills Breakdown */}
+      <div className="bg-white rounded-lg shadow-sm border p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Current Bills</h3>
+        
+        {bills ? (
+          <div className="space-y-3">
+            <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+              <span className="text-gray-700">Base Rent</span>
+              <span className="font-semibold">KSh {(bills.base_rent || 0).toLocaleString()}</span>
+            </div>
+            
+            <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+              <span className="text-gray-700">Water Bill</span>
+              <span className="font-semibold">KSh {(bills.water_bill || 0).toLocaleString()}</span>
+            </div>
+            
+            <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+              <span className="text-gray-700">Electricity</span>
+              <span className="font-semibold">KSh {(bills.electricity_bill || 0).toLocaleString()}</span>
+            </div>
+            
+            <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg border-2 border-blue-200">
+              <span className="text-blue-700 font-medium">Total Amount</span>
+              <span className="font-bold text-blue-700 text-lg">
+                KSh {((bills.base_rent || 0) + (bills.water_bill || 0) + (bills.electricity_bill || 0)).toLocaleString()}
+              </span>
+            </div>
+          </div>
+        ) : (
+          <p className="text-gray-600">No bills available</p>
+        )}
+      </div>
+
+      {/* Quick Actions */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <button 
+          onClick={() => setActiveTab('payment')}
+          className="bg-green-600 text-white p-4 rounded-lg flex items-center justify-center hover:bg-green-700"
+        >
+          <CreditCard className="h-5 w-5 mr-2" />
+          Pay Rent
+        </button>
+        
+        <button 
+          onClick={() => setActiveTab('chat')}
+          className="bg-blue-600 text-white p-4 rounded-lg flex items-center justify-center hover:bg-blue-700"
+        >
+          <MessageSquare className="h-5 w-5 mr-2" />
+          Chat Landlord
+        </button>
+        
+        <button 
+          onClick={handleEmergency}
+          className="bg-red-600 text-white p-4 rounded-lg flex items-center justify-center hover:bg-red-700"
+        >
+          <AlertTriangle className="h-5 w-5 mr-2" />
+          Emergency
+        </button>
+      </div>
+    </div>
+  );
+
+  /**
+   * Payment Component
+   * Handles M-Pesa payments (full/partial)
+   */
+  const PaymentSection = () => (
+    <div className="bg-white rounded-lg shadow-sm border p-6">
+      <h2 className="text-lg font-semibold text-gray-900 mb-6">Pay Rent</h2>
+      
+      <div className="space-y-6">
+        {/* Payment Type Selection */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Payment Type
+          </label>
+          <div className="flex space-x-4">
+            <label className="flex items-center">
+              <input
+                type="radio"
+                value="full"
+                checked={paymentType === 'full'}
+                onChange={(e) => setPaymentType(e.target.value)}
+                className="mr-2"
+              />
+              Full Payment
+            </label>
+            <label className="flex items-center">
+              <input
+                type="radio"
+                value="partial"
+                checked={paymentType === 'partial'}
+                onChange={(e) => setPaymentType(e.target.value)}
+                className="mr-2"
+              />
+              Partial Payment
+            </label>
+          </div>
+        </div>
+
+        {/* Amount Input */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Amount (KSh)
+          </label>
+          <input
+            type="number"
+            value={paymentAmount}
+            onChange={(e) => setPaymentAmount(e.target.value)}
+            placeholder={paymentType === 'full' ? 
+              `${((bills?.base_rent || 0) + (bills?.water_bill || 0) + (bills?.electricity_bill || 0)).toLocaleString()}` : 
+              'Enter amount'
+            }
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        {/* Phone Number Input */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            M-Pesa Phone Number
+          </label>
+          <input
+            type="tel"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            placeholder="254712345678"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        {/* Payment Button */}
+        <button
+          onClick={handlePayment}
+          className="w-full bg-green-600 text-white py-3 px-4 rounded-md hover:bg-green-700 flex items-center justify-center"
+        >
+          <Phone className="h-5 w-5 mr-2" />
+          Pay via M-Pesa
+        </button>
+
+        {/* Payment Info */}
+        <div className="bg-blue-50 p-4 rounded-lg">
+          <p className="text-sm text-blue-700">
+            <strong>Note:</strong> You will receive an M-Pesa prompt on your phone. 
+            Enter your M-Pesa PIN to complete the payment.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+
+  /**
+   * Payment History Component
+   * Shows receipts and transaction history
+   */
+  const PaymentHistory = () => (
+    <div className="bg-white rounded-lg shadow-sm border p-6">
+      <h2 className="text-lg font-semibold text-gray-900 mb-6">Payment History</h2>
+      
+      {payments.length === 0 ? (
+        <div className="text-center py-8">
+          <Receipt className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+          <p className="text-gray-600">No payments made yet.</p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {payments.map((payment) => (
+            <div key={payment.id} className="border rounded-lg p-4">
+              <div className="flex justify-between items-start">
+                <div>
+                  <p className="font-medium text-gray-900">
+                    Payment #{payment.transaction_id}
+                  </p>
+                  <p className="text-sm text-gray-600">{payment.payment_date}</p>
+                  <p className="text-sm text-gray-600">
+                    Method: {payment.payment_method.toUpperCase()}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="font-semibold text-green-600">
+                    KSh {payment.amount.toLocaleString()}
+                  </p>
+                  <span className={`px-2 py-1 rounded-full text-xs ${
+                    payment.status === 'completed' 
+                      ? 'bg-green-100 text-green-800' 
+                      : 'bg-yellow-100 text-yellow-800'
+                  }`}>
+                    {payment.status}
+                  </span>
+                </div>
+              </div>
+              
+              <div className="mt-3 flex justify-between items-center">
+                <span className="text-sm text-gray-600">
+                  Type: {payment.payment_type}
+                </span>
+                <button className="text-blue-600 hover:text-blue-800 text-sm">
+                  Download Receipt
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+
+  // Loading state
+  if (loading) {
     return (
-      <STKPushPayment
-        amount={showPayment === 'partial' ? null : showPayment}
-        billBreakdown={tenantData.billBreakdown}
-        onSuccess={handlePaymentSuccess}
-        onCancel={() => setShowPayment(false)}
-      />
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading your dashboard...</p>
+        </div>
+      </div>
     );
   }
 
@@ -79,213 +415,81 @@ const TenantPortal = ({ onBack }) => {
       {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <button onClick={onBack} className="mr-4 p-2 hover:bg-gray-100 rounded-lg">
-                <ArrowLeft className="h-5 w-5" />
-              </button>
-              <Home className="h-8 w-8 text-indigo-600 mr-3" />
-              <h1 className="text-xl font-semibold text-gray-900">Tenant Portal</h1>
+              <Home className="h-8 w-8 text-blue-600" />
+              <h1 className="ml-3 text-xl font-semibold text-gray-900">
+                Tenant Portal
+              </h1>
             </div>
+            
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600">Welcome, {tenantData.name}</span>
+              <button className="text-gray-400 hover:text-gray-600">
+                <Bell className="h-6 w-6" />
+              </button>
+              <div className="text-sm">
+                <p className="font-medium text-gray-900">Welcome, {user?.first_name}</p>
+                <p className="text-gray-600">Unit {unitDetails?.unit_number}</p>
+              </div>
             </div>
           </div>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Navigation Tabs */}
-        <div className="flex space-x-8 mb-8 border-b">
-          {[
-            { id: 'overview', label: 'Overview' },
-            { id: 'payments', label: 'Payments' },
-            { id: 'history', label: 'Payment History' },
-            { id: 'chat', label: 'Messages' }
-          ].map(tab => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                activeTab === tab.id
-                  ? 'border-indigo-500 text-indigo-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
+        <div className="mb-8">
+          <nav className="flex space-x-8">
+            {[
+              { id: 'dashboard', label: 'Dashboard', icon: Home },
+              { id: 'payment', label: 'Pay Rent', icon: CreditCard },
+              { id: 'history', label: 'Payment History', icon: Receipt },
+              { id: 'chat', label: 'Messages', icon: MessageSquare },
+              { id: 'broadcast', label: 'Apartment Chat', icon: Users }
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center px-3 py-2 text-sm font-medium rounded-md ${
+                  activeTab === tab.id
+                    ? 'bg-blue-100 text-blue-700'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                <tab.icon className="h-4 w-4 mr-2" />
+                {tab.label}
+              </button>
+            ))}
+          </nav>
         </div>
 
-        {/* Overview Tab */}
-        {activeTab === 'overview' && (
-          <div className="space-y-6">
-            {/* Property Info Card */}
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Property Information</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <img 
-                    src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400" 
-                    alt={tenantData.property}
-                    className="w-full h-48 object-cover rounded-lg"
-                  />
-                </div>
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">Property</label>
-                    <p className="text-lg font-semibold text-gray-900">{tenantData.property}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">Unit</label>
-                    <p className="text-lg font-semibold text-gray-900">{tenantData.unit}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">Address</label>
-                    <p className="text-gray-700">{tenantData.address}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">Landlord</label>
-                    <p className="text-gray-700">{tenantData.landlord}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Payment Status Card */}
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Payment Status</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="text-center p-4 bg-indigo-50 rounded-lg">
-                  <CreditCard className="h-8 w-8 text-indigo-600 mx-auto mb-2" />
-                  <p className="text-sm font-medium text-gray-600">Monthly Rent</p>
-                  <p className="text-2xl font-bold text-gray-900">KSh {tenantData.monthlyRent.toLocaleString()}</p>
-                </div>
-                <div className="text-center p-4 bg-green-50 rounded-lg">
-                  <Calendar className="h-8 w-8 text-green-600 mx-auto mb-2" />
-                  <p className="text-sm font-medium text-gray-600">Next Due Date</p>
-                  <p className="text-lg font-semibold text-gray-900">{tenantData.nextDueDate}</p>
-                </div>
-                <div className="text-center p-4 bg-blue-50 rounded-lg">
-                  <CheckCircle className="h-8 w-8 text-blue-600 mx-auto mb-2" />
-                  <p className="text-sm font-medium text-gray-600">Status</p>
-                  <p className="text-lg font-semibold text-green-600">Up to Date</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Payments Tab */}
-        {activeTab === 'payments' && (
-          <div className="space-y-6">
-            {/* Bill Breakdown */}
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Monthly Bill Breakdown</h3>
-              <div className="space-y-3 mb-6">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Base Rent</span>
-                  <span className="font-medium">KSh {tenantData.billBreakdown.rent.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Water Bill</span>
-                  <span className="font-medium">KSh {tenantData.billBreakdown.water.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Electricity</span>
-                  <span className="font-medium">KSh {tenantData.billBreakdown.electricity.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Maintenance Fee</span>
-                  <span className="font-medium">KSh {tenantData.billBreakdown.maintenance.toLocaleString()}</span>
-                </div>
-                <hr className="my-3" />
-                <div className="flex justify-between text-lg font-semibold">
-                  <span>Total Amount Due</span>
-                  <span className="text-indigo-600">KSh {tenantData.billBreakdown.total.toLocaleString()}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Payment Options */}
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-6">Payment Options</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <button
-                  onClick={() => setShowPayment(tenantData.billBreakdown.total)}
-                  className="p-4 border-2 border-indigo-200 rounded-lg hover:border-indigo-400 hover:bg-indigo-50 transition-colors"
-                >
-                  <div className="text-center">
-                    <CreditCard className="h-8 w-8 text-indigo-600 mx-auto mb-2" />
-                    <h4 className="font-semibold text-gray-900 mb-1">Full Payment</h4>
-                    <p className="text-sm text-gray-600 mb-2">Pay complete bill</p>
-                    <p className="text-lg font-bold text-indigo-600">KSh {tenantData.billBreakdown.total.toLocaleString()}</p>
-                  </div>
-                </button>
-                
-                <button
-                  onClick={() => setShowPayment('partial')}
-                  className="p-4 border-2 border-green-200 rounded-lg hover:border-green-400 hover:bg-green-50 transition-colors"
-                >
-                  <div className="text-center">
-                    <CreditCard className="h-8 w-8 text-green-600 mx-auto mb-2" />
-                    <h4 className="font-semibold text-gray-900 mb-1">Partial Payment</h4>
-                    <p className="text-sm text-gray-600 mb-2">Pay custom amount</p>
-                    <p className="text-lg font-bold text-green-600">Custom Amount</p>
-                  </div>
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Payment History Tab */}
-        {activeTab === 'history' && (
-          <div className="bg-white rounded-lg shadow">
-            <div className="px-6 py-4 border-b">
-              <h3 className="text-lg font-medium text-gray-900">Payment History</h3>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Method</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reference</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {paymentHistory.map(payment => (
-                    <tr key={payment.id}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{payment.date}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        KSh {payment.amount.toLocaleString()}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{payment.method}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{payment.reference}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          {getStatusIcon(payment.status)}
-                          <span className={`ml-2 inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(payment.status)}`}>
-                            {payment.status}
-                          </span>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-
-        {/* Chat Tab */}
+        {/* Tab Content */}
+        {activeTab === 'dashboard' && <DashboardOverview />}
+        {activeTab === 'payment' && <PaymentSection />}
+        {activeTab === 'history' && <PaymentHistory />}
+        
         {activeTab === 'chat' && (
-          <Chat userRole="tenant" />
+          <div className="bg-white rounded-lg shadow-sm border p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Chat with Landlord</h2>
+            <p className="text-gray-600">Direct messaging with your landlord will be implemented here.</p>
+          </div>
         )}
-      </div>
+        
+        {activeTab === 'broadcast' && (
+          <div className="bg-white rounded-lg shadow-sm border p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Apartment Broadcast</h2>
+            <p className="text-gray-600">Community chat for all apartment residents will be implemented here.</p>
+            <button 
+              onClick={handleEmergency}
+              className="mt-4 bg-red-600 text-white px-4 py-2 rounded-lg flex items-center hover:bg-red-700"
+            >
+              <AlertTriangle className="h-4 w-4 mr-2" />
+              Send Emergency Alert
+            </button>
+          </div>
+        )}
+      </main>
     </div>
   );
 };

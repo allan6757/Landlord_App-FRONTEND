@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://landlord-app-backend-1eph.onrender.com/api'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://landlord-app-backend-1eph.onrender.com'
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem('auth_token')
@@ -8,12 +8,34 @@ const getAuthHeaders = () => {
   }
 }
 
+const handleResponse = async (response) => {
+  console.log('API Response:', response.status, response.url)
+  
+  if (!response.ok) {
+    const errorText = await response.text()
+    console.error('API Error:', errorText)
+    
+    let error
+    try {
+      error = JSON.parse(errorText)
+    } catch {
+      error = { message: errorText || 'Network error' }
+    }
+    
+    throw new Error(error.message || error.error || `HTTP ${response.status}`)
+  }
+  
+  const data = await response.json()
+  console.log('API Data:', data)
+  return data
+}
+
 export const api = {
   get: async (endpoint) => {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       headers: getAuthHeaders()
     })
-    return response.json()
+    return handleResponse(response)
   },
   post: async (endpoint, data) => {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
@@ -21,7 +43,7 @@ export const api = {
       headers: getAuthHeaders(),
       body: JSON.stringify(data)
     })
-    return response.json()
+    return handleResponse(response)
   },
   put: async (endpoint, data) => {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
@@ -29,14 +51,14 @@ export const api = {
       headers: getAuthHeaders(),
       body: JSON.stringify(data)
     })
-    return response.json()
+    return handleResponse(response)
   },
   delete: async (endpoint) => {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       method: 'DELETE',
       headers: getAuthHeaders()
     })
-    return response.json()
+    return handleResponse(response)
   }
 }
 
