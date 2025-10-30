@@ -27,6 +27,12 @@ const handleResponse = async (response) => {
   
   const data = await response.json()
   console.log('API Data:', data)
+  
+  // Handle backend response format
+  if (data.success && data.data) {
+    return data.data
+  }
+  
   return data
 }
 

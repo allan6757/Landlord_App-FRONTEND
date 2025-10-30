@@ -95,10 +95,10 @@ export const AuthProvider = ({ children }) => {
       const data = await response.json();
       console.log('Login response data:', data);
       
-      if (data.success && data.data?.token) {
-        localStorage.setItem('user', JSON.stringify(data.data.user));
-        localStorage.setItem('auth_token', data.data.token);
-        setUser(data.data.user);
+      if (response.ok && data.token) {
+        localStorage.setItem('user', JSON.stringify(data.user));
+        localStorage.setItem('auth_token', data.token);
+        setUser(data.user);
         return { success: true };
       } else {
         return { 
@@ -109,33 +109,9 @@ export const AuthProvider = ({ children }) => {
       
     } catch (error) {
       console.error('Login error:', error);
-      
-      // Fallback for CORS issues in development
-      if (error.message.includes('Failed to fetch') || error.message.includes('CORS')) {
-        console.log('CORS issue detected, using demo credentials');
-        if ((email === 'landlord@example.com' && password === 'password123') || 
-            (email === 'tenant@example.com' && password === 'password123')) {
-          const mockUser = {
-            id: 1,
-            email: email,
-            first_name: email.includes('landlord') ? 'John' : 'Jane',
-            last_name: email.includes('landlord') ? 'Landlord' : 'Tenant',
-            profile: {
-              id: 1,
-              role: email.includes('landlord') ? 'landlord' : 'tenant'
-            }
-          };
-          localStorage.setItem('user', JSON.stringify(mockUser));
-          localStorage.setItem('auth_token', 'demo-token');
-          setUser(mockUser);
-          return { success: true };
-        }
-        return { success: false, error: 'Use landlord@example.com / password123 or tenant@example.com / password123 for demo' };
-      }
-      
       return { 
         success: false, 
-        error: 'Network error. Please check if backend is running.' 
+        error: error.message || 'Login failed. Please try again.' 
       };
     }
   };
@@ -170,10 +146,10 @@ export const AuthProvider = ({ children }) => {
       const data = await response.json();
       console.log('Register response data:', data);
       
-      if (data.success && data.data?.token) {
-        localStorage.setItem('user', JSON.stringify(data.data.user));
-        localStorage.setItem('auth_token', data.data.token);
-        setUser(data.data.user);
+      if (response.ok && data.token) {
+        localStorage.setItem('user', JSON.stringify(data.user));
+        localStorage.setItem('auth_token', data.token);
+        setUser(data.user);
         return { success: true };
       } else {
         return { 
@@ -184,29 +160,9 @@ export const AuthProvider = ({ children }) => {
       
     } catch (error) {
       console.error('Registration error:', error);
-      
-      // Fallback for CORS issues in development
-      if (error.message.includes('Failed to fetch') || error.message.includes('CORS')) {
-        console.log('CORS issue detected, using demo registration');
-        const mockUser = {
-          id: Date.now(),
-          email: userData.email,
-          first_name: userData.firstName,
-          last_name: userData.lastName,
-          profile: {
-            id: Date.now(),
-            role: userData.role
-          }
-        };
-        localStorage.setItem('user', JSON.stringify(mockUser));
-        localStorage.setItem('auth_token', 'demo-token');
-        setUser(mockUser);
-        return { success: true };
-      }
-      
       return { 
         success: false, 
-        error: 'Network error. Please check if backend is running.' 
+        error: error.message || 'Registration failed. Please try again.' 
       };
     }
   };

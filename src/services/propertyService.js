@@ -38,18 +38,33 @@ export const propertyService = {
 
   // Unit Management
   async getUnits(propertyId) {
-    const response = await api.get(`/api/properties/${propertyId}/units`);
-    return response;
+    try {
+      const response = await api.get(`/api/properties/${propertyId}/units`);
+      return response;
+    } catch (error) {
+      console.error('Error fetching units:', error);
+      return [];
+    }
   },
 
   async createUnit(propertyId, unitData) {
-    const response = await api.post(`/api/properties/${propertyId}/units`, unitData);
-    return response;
+    try {
+      const response = await api.post(`/api/properties/${propertyId}/units`, unitData);
+      return response;
+    } catch (error) {
+      console.error('Error creating unit:', error);
+      return null;
+    }
   },
 
   async updateUnit(propertyId, unitId, unitData) {
-    const response = await api.put(`/api/properties/${propertyId}/units/${unitId}`, unitData);
-    return response;
+    try {
+      const response = await api.put(`/api/properties/${propertyId}/units/${unitId}`, unitData);
+      return response;
+    } catch (error) {
+      console.error('Error updating unit:', error);
+      return null;
+    }
   },
 
   // Rent Management
