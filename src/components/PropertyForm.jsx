@@ -95,22 +95,10 @@ const PropertyForm = ({ onSuccess, onCancel, editProperty = null }) => {
       // Create property data structure
       const propertyData = {
         ...data,
-        total_units: units.length,
-        units: units.map(unit => ({
-          unit_number: unit.unit_number,
-          rent: parseFloat(unit.rent) || 0,
-          unit_type: unit.unit_type,
-          status: 'vacant'
-        }))
+        total_units: units.length
       };
       
       console.log('Creating property:', propertyData);
-      
-      // Create property via API
-      const propertyData = {
-        ...data,
-        total_units: units.length
-      };
       
       let propertyResponse;
       if (editProperty) {
@@ -205,125 +193,125 @@ const PropertyForm = ({ onSuccess, onCancel, editProperty = null }) => {
                 Property Name *
               </label>
               <input
-                type=\"text\"
+                type="text"
                 {...register('name', { required: 'Property name is required' })}
-                placeholder=\"e.g., Greenshade Apartments\"
-                className=\"w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500\"
+                placeholder="e.g., Greenshade Apartments"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               {errors.name && (
-                <p className=\"text-red-600 text-sm mt-1\">{errors.name.message}</p>
+                <p className="text-red-600 text-sm mt-1">{errors.name.message}</p>
               )}
             </div>
 
             {/* Total Units */}
             <div>
-              <label className=\"block text-sm font-medium text-gray-700 mb-2\">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Number of Units *
               </label>
               <input
-                type=\"number\"
-                min=\"1\"
-                max=\"100\"
+                type="number"
+                min="1"
+                max="100"
                 {...register('total_units', { 
                   required: 'Number of units is required',
                   min: { value: 1, message: 'Must have at least 1 unit' },
                   max: { value: 100, message: 'Maximum 100 units allowed' }
                 })}
-                className=\"w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500\"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               {errors.total_units && (
-                <p className=\"text-red-600 text-sm mt-1\">{errors.total_units.message}</p>
+                <p className="text-red-600 text-sm mt-1">{errors.total_units.message}</p>
               )}
             </div>
           </div>
 
           {/* Address */}
-          <div className=\"mt-4\">
-            <label className=\"block text-sm font-medium text-gray-700 mb-2\">
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Address *
             </label>
             <input
-              type=\"text\"
+              type="text"
               {...register('address', { required: 'Address is required' })}
-              placeholder=\"Full property address\"
-              className=\"w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500\"
+              placeholder="Full property address"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             {errors.address && (
-              <p className=\"text-red-600 text-sm mt-1\">{errors.address.message}</p>
+              <p className="text-red-600 text-sm mt-1">{errors.address.message}</p>
             )}
           </div>
 
           {/* Description */}
-          <div className=\"mt-4\">
-            <label className=\"block text-sm font-medium text-gray-700 mb-2\">
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Description
             </label>
             <textarea
               {...register('description')}
               rows={3}
-              placeholder=\"Property description and amenities\"
-              className=\"w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500\"
+              placeholder="Property description and amenities"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
         </div>
 
         {/* Units Configuration Section */}
-        <div className=\"bg-gray-50 p-4 rounded-lg\">
-          <h3 className=\"text-lg font-medium text-gray-900 mb-4\">Units Configuration</h3>
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <h3 className="text-lg font-medium text-gray-900 mb-4">Units Configuration</h3>
           
-          <div className=\"space-y-4\">
+          <div className="space-y-4">
             {units.map((unit, index) => (
-              <div key={index} className=\"bg-white p-4 rounded-lg border\">
-                <div className=\"flex items-center mb-3\">
-                  <Home className=\"h-5 w-5 text-gray-600 mr-2\" />
-                  <h4 className=\"font-medium text-gray-900\">Unit {index + 1}</h4>
+              <div key={index} className="bg-white p-4 rounded-lg border">
+                <div className="flex items-center mb-3">
+                  <Home className="h-5 w-5 text-gray-600 mr-2" />
+                  <h4 className="font-medium text-gray-900">Unit {index + 1}</h4>
                 </div>
                 
-                <div className=\"grid grid-cols-1 md:grid-cols-3 gap-4\">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {/* Unit Number */}
                   <div>
-                    <label className=\"block text-sm font-medium text-gray-700 mb-1\">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
                       Unit Number
                     </label>
                     <input
-                      type=\"text\"
+                      type="text"
                       value={unit.unit_number}
                       onChange={(e) => updateUnit(index, 'unit_number', e.target.value)}
-                      placeholder=\"e.g., A1, 101\"
-                      className=\"w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500\"
+                      placeholder="e.g., A1, 101"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
 
                   {/* Monthly Rent */}
                   <div>
-                    <label className=\"block text-sm font-medium text-gray-700 mb-1\">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
                       Monthly Rent (KSh)
                     </label>
                     <input
-                      type=\"number\"
+                      type="number"
                       value={unit.rent}
                       onChange={(e) => updateUnit(index, 'rent', e.target.value)}
-                      placeholder=\"e.g., 25000\"
-                      className=\"w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500\"
+                      placeholder="e.g., 25000"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
 
                   {/* Unit Type */}
                   <div>
-                    <label className=\"block text-sm font-medium text-gray-700 mb-1\">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
                       Unit Type
                     </label>
                     <select
                       value={unit.unit_type}
                       onChange={(e) => updateUnit(index, 'unit_type', e.target.value)}
-                      className=\"w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500\"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
-                      <option value=\"apartment\">Apartment</option>
-                      <option value=\"studio\">Studio</option>
-                      <option value=\"1bedroom\">1 Bedroom</option>
-                      <option value=\"2bedroom\">2 Bedroom</option>
-                      <option value=\"3bedroom\">3 Bedroom</option>
-                      <option value=\"penthouse\">Penthouse</option>
+                      <option value="apartment">Apartment</option>
+                      <option value="studio">Studio</option>
+                      <option value="1bedroom">1 Bedroom</option>
+                      <option value="2bedroom">2 Bedroom</option>
+                      <option value="3bedroom">3 Bedroom</option>
+                      <option value="penthouse">Penthouse</option>
                     </select>
                   </div>
                 </div>
@@ -333,28 +321,28 @@ const PropertyForm = ({ onSuccess, onCancel, editProperty = null }) => {
         </div>
 
         {/* Form Actions */}
-        <div className=\"flex justify-end space-x-4 pt-6 border-t\">
+        <div className="flex justify-end space-x-4 pt-6 border-t">
           <button
-            type=\"button\"
+            type="button"
             onClick={onCancel}
-            className=\"px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500\"
+            className="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500"
           >
             Cancel
           </button>
           
           <button
-            type=\"submit\"
+            type="submit"
             disabled={loading}
-            className=\"px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center disabled:opacity-50\"
+            className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center disabled:opacity-50"
           >
             {loading ? (
               <>
-                <div className=\"animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2\"></div>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
                 Saving...
               </>
             ) : (
               <>
-                <Save className=\"h-4 w-4 mr-2\" />
+                <Save className="h-4 w-4 mr-2" />
                 {editProperty ? 'Update Property' : 'Create Property'}
               </>
             )}
