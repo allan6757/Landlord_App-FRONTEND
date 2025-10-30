@@ -32,13 +32,11 @@ const Dashboard = () => {
     }
   };
 
-  // RESOLVED MERGE CONFLICT START
   const userProperties = properties.filter(property => 
     user.profile.role === 'landlord' 
       ? property.landlord_id === user.profile.id
       : property.tenant_id === user.profile.id
   );
-  // RESOLVED MERGE CONFLICT END
 
   const recentPayments = payments.slice(0, 5);
   const totalRevenue = userProperties.reduce((sum, property) => sum + (property.monthly_rent || 0), 0);
@@ -53,12 +51,10 @@ const Dashboard = () => {
               Welcome back, {user.first_name}!
             </h1>
             <p className="mt-2 text-gray-600">
-              {/* RESOLVED MERGE CONFLICT START */}
               {user.profile.role === 'landlord' 
                 ? 'Manage your rental properties and tenants'
                 : 'View your rental information and make payments'
               }
-              {/* RESOLVED MERGE CONFLICT END */}
             </p>
           </div>
 
