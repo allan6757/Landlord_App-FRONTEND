@@ -80,8 +80,14 @@ const Register = () => {
     setLoading(true);
 
     try {
+      // Add selected role to form data
+      const formData = {
+        ...data,
+        role: selectedRole
+      };
+      
       // Attempt registration
-      const result = await registerUser(data);
+      const result = await registerUser(formData);
       
       if (result.success) {
         // Redirect to dashboard on successful registration

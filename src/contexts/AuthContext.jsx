@@ -18,7 +18,6 @@
  */
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { getErrorMessage } from '../utils/errorHandler';
 
 // Create the authentication context
 const AuthContext = createContext();
@@ -81,39 +80,30 @@ export const AuthProvider = ({ children }) => {
    */
   const login = async (email, password) => {
     try {
-      console.log('Attempting login with:', { email });
-      
-
-      
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://landlord-app-backend-1eph.onrender.com'}/api/auth/login`, {
+      const response = await fetch('http://localhost:5000/api/auth/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
       });
-
-      console.log('Login response status:', response.status);
       
       const data = await response.json();
-      console.log('Login response data:', data);
       
-      if (response.ok && (data.token || data.access_token)) {
-        const token = data.token || data.access_token;
+      if (data.success) {
         localStorage.setItem('user', JSON.stringify(data.user));
-        localStorage.setItem('auth_token', token);
+        localStorage.setItem('auth_token', data.token);
         setUser(data.user);
         return { success: true };
       } else {
-        return { 
-          success: false, 
-          error: getErrorMessage(data)
-        };
+        return { success: false, error: data.error || 'Login failed' };
       }
       
     } catch (error) {
       console.error('Login error:', error);
       return { 
         success: false, 
-        error: getErrorMessage(error)
+        error: 'Login failed. Please check your credentials.' 
       };
     }
   };
@@ -127,47 +117,30 @@ export const AuthProvider = ({ children }) => {
    */
   const register = async (userData) => {
     try {
-
-      
-      const payload = {
-        first_name: userData.firstName,
-        last_name: userData.lastName,
-        email: userData.email,
-        password: userData.password,
-        role: userData.role
-      };
-      
-      console.log('Attempting registration with:', payload);
-      
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://landlord-app-backend-1eph.onrender.com'}/api/auth/register`, {
+      const response = await fetch('http://localhost:5000/api/auth/register', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
       });
-
-      console.log('Register response status:', response.status);
       
       const data = await response.json();
-      console.log('Register response data:', data);
       
-      if (response.ok && (data.token || data.access_token)) {
-        const token = data.token || data.access_token;
+      if (data.success) {
         localStorage.setItem('user', JSON.stringify(data.user));
-        localStorage.setItem('auth_token', token);
+        localStorage.setItem('auth_token', data.token);
         setUser(data.user);
         return { success: true };
       } else {
-        return { 
-          success: false, 
-          error: getErrorMessage(data)
-        };
+        return { success: false, error: data.error || 'Registration failed' };
       }
       
     } catch (error) {
       console.error('Registration error:', error);
       return { 
         success: false, 
-        error: getErrorMessage(error)
+        error: 'Registration failed. Please try again.' 
       };
     }
   };
