@@ -2,11 +2,11 @@
 
 A comprehensive React-based property management application for landlords and tenants, built as a capstone project demonstrating full-stack development skills.
 
-## 🏗️ Project Overview
+## Project Overview
 
 PropManager is a modern property management platform that streamlines the relationship between landlords and tenants. The application provides role-based dashboards, secure authentication, payment processing through M-Pesa integration, and real-time communication features.
 
-### 🎯 Learning Goals Demonstrated
+### Learning Goals Demonstrated
 
 This project showcases proficiency in:
 - **React 18** with modern hooks and patterns
@@ -19,15 +19,15 @@ This project showcases proficiency in:
 - **Component composition** and reusability
 - **Error handling** and user experience best practices
 
-## ✨ Features
+## Features
 
-### 🏠 Landing Page
+### Landing Page
 - **Role Selection**: Choose between Landlord and Tenant accounts
 - **Feature Showcase**: Highlights M-Pesa Integration, Property Management, and Real-time Chat
 - **Responsive Design**: Mobile-first approach with Tailwind CSS
 - **Modern UI**: Clean, professional interface with smooth animations
 
-### 🔐 Authentication System
+### Authentication System
 - **JWT-based Authentication**: Secure token-based authentication
 - **Role-Based Access Control (RBAC)**: Separate interfaces for landlords and tenants
 - **Form Validation**: Comprehensive validation with user-friendly error messages
@@ -49,12 +49,12 @@ This project showcases proficiency in:
 - **Maintenance Requests**: Submit and track property maintenance issues
 - **Landlord Communication**: Direct messaging with property owners
 
-### 💬 Real-time Features
+### Real-time Features
 - **Instant Messaging**: Direct communication between landlords and tenants
 - **Notifications**: Real-time updates for payments, messages, and requests
 - **Status Updates**: Live updates on payment and maintenance request status
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Frontend Technologies
 - **React 18**: Modern React with hooks and concurrent features
@@ -69,7 +69,7 @@ This project showcases proficiency in:
 - **Prettier**: Code formatting for consistent style
 - **Git**: Version control with conventional commit messages
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - Node.js (v16 or higher)
@@ -108,7 +108,7 @@ This project showcases proficiency in:
 5. **Open your browser**
    Navigate to [http://localhost:3000](http://localhost:3000)
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 src/
@@ -134,7 +134,7 @@ src/
 - **LandingPage.jsx**: Marketing page with feature highlights
 - **Login/Register.jsx**: Authentication forms with validation
 
-## 🔧 Available Scripts
+## Available Scripts
 
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
@@ -142,7 +142,7 @@ src/
 - `npm run lint` - Run ESLint for code quality
 - `npm run lint:fix` - Fix ESLint issues automatically
 
-## 🎨 Design System
+## Design System
 
 ### Color Palette
 - **Primary**: Blue (#2563eb) - Trust, professionalism
@@ -161,7 +161,7 @@ src/
 - **Tablet**: 640px - 1024px
 - **Desktop**: > 1024px
 
-## 🔐 Authentication Flow
+## Authentication Flow
 
 ### Registration Process
 1. User selects role (Landlord/Tenant)
@@ -179,19 +179,19 @@ src/
 - **Landlords**: Access to property management, tenant oversight, revenue tracking
 - **Tenants**: Access to payment portal, maintenance requests, communication
 
-## 🧪 Demo Credentials
+## Demo Credentials
 
-For testing purposes, use these credentials:
+For testing and demonstration purposes, use the following credentials:
 
-**Landlord Account:**
-- Email: `landlord@test.com`
-- Password: `password123`
+**Standard User Account:**
+- Username: `demouser`
+- Password: `demo123`
 
-**Tenant Account:**
-- Email: `tenant@test.com`
-- Password: `password123`
+**Administrator Account:**
+- Username: `admin`
+- Password: `admin2024`
 
-## 🚀 Deployment
+## Deployment
 
 ### Build for Production
 ```bash
@@ -209,7 +209,7 @@ npm run build
 2. Run: `vercel`
 3. Follow the prompts to deploy
 
-## 🔗 API Integration
+## API Integration
 
 This frontend is designed to work with the PropManager Flask backend API. Key integration points:
 
@@ -218,7 +218,7 @@ This frontend is designed to work with the PropManager Flask backend API. Key in
 - **Payments**: `/api/payments` (M-Pesa integration)
 - **Messages**: `/api/messages` (Real-time chat)
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature/amazing-feature`
@@ -235,7 +235,7 @@ We use Conventional Commits for clear commit messages:
 - `refactor:` Code refactoring
 - `test:` Test additions or updates
 
-## 📝 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
@@ -245,14 +245,14 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - GitHub: [@allan6757](https://github.com/allan6757)
 - Email: allanmaina@example.com
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - **Moringa School** for the comprehensive full-stack development curriculum
 - **React Team** for the excellent documentation and tools
 - **Tailwind CSS** for the utility-first CSS framework
 - **Lucide** for the beautiful icon library
 
-## 📚 Learning Resources
+## Learning Resources
 
 This project demonstrates concepts learned from:
 - React Official Documentation
@@ -263,4 +263,4 @@ This project demonstrates concepts learned from:
 
 ---
 
-**Built with ❤️ for Moringa School Capstone Project**
+**Built for Moringa School Capstone Project**

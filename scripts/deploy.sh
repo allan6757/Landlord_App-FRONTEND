@@ -1,20 +1,37 @@
 #!/bin/bash
 
-set -e
+# Frontend Deployment Script for Vercel
 
-echo "🚀 Starting deployment process..."
+echo "🚀 Starting frontend deployment..."
 
-# Build the application
-echo "📦 Building application..."
+# Check if we're in the right directory
+if [ ! -f "package.json" ]; then
+    echo "❌ Error: package.json not found. Run this script from the frontend root directory."
+    exit 1
+fi
+
+# Install dependencies
+echo "📦 Installing dependencies..."
+npm ci
+
+# Run tests
+echo "🧪 Running tests..."
+npm run test -- --run
+
+# Build for production
+echo "🏗️ Building for production..."
 npm run build
 
-# Build Docker image
-echo "🐳 Building Docker image..."
-docker build -t propmanager:latest .
+# Deploy to Vercel
+echo "🌐 Deploying to Vercel..."
+if command -v vercel &> /dev/null; then
+    vercel --prod
+else
+    echo "⚠️ Vercel CLI not found. Install with: npm i -g vercel"
+    echo "📋 Manual deployment steps:"
+    echo "1. Install Vercel CLI: npm i -g vercel"
+    echo "2. Login: vercel login"
+    echo "3. Deploy: vercel --prod"
+fi
 
-# Tag for production
-docker tag propmanager:latest propmanager:$(git rev-parse --short HEAD)
-
-echo "✅ Deployment preparation complete!"
-echo "Docker images ready:"
-docker images | grep propmanager
+echo "✅ Deployment script completed!"

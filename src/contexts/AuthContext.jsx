@@ -80,38 +80,30 @@ export const AuthProvider = ({ children }) => {
    */
   const login = async (email, password) => {
     try {
-      console.log('Attempting login with:', { email });
-      
-      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://landlord-app-backend-1eph.onrender.com';
-      
-      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+      const response = await fetch('http://localhost:5000/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ email, password }),
       });
       
       const data = await response.json();
-      console.log('Login response data:', data);
       
-      if (response.ok && data.token) {
+      if (data.success) {
         localStorage.setItem('user', JSON.stringify(data.user));
         localStorage.setItem('auth_token', data.token);
         setUser(data.user);
         return { success: true };
       } else {
-        return { 
-          success: false, 
-          error: data.message || data.error || 'Login failed' 
-        };
+        return { success: false, error: data.error || 'Login failed' };
       }
       
     } catch (error) {
       console.error('Login error:', error);
       return { 
         success: false, 
-        error: error.message || 'Login failed. Please try again.' 
+        error: 'Login failed. Please check your credentials.' 
       };
     }
   };
@@ -125,44 +117,30 @@ export const AuthProvider = ({ children }) => {
    */
   const register = async (userData) => {
     try {
-      console.log('Attempting registration with:', userData);
-      
-      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://landlord-app-backend-1eph.onrender.com';
-      
-      const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
+      const response = await fetch('http://localhost:5000/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          email: userData.email,
-          password: userData.password,
-          first_name: userData.firstName,
-          last_name: userData.lastName,
-          role: userData.role
-        })
+        body: JSON.stringify(userData),
       });
       
       const data = await response.json();
-      console.log('Register response data:', data);
       
-      if (response.ok && data.token) {
+      if (data.success) {
         localStorage.setItem('user', JSON.stringify(data.user));
         localStorage.setItem('auth_token', data.token);
         setUser(data.user);
         return { success: true };
       } else {
-        return { 
-          success: false, 
-          error: data.message || data.error || 'Registration failed' 
-        };
+        return { success: false, error: data.error || 'Registration failed' };
       }
       
     } catch (error) {
       console.error('Registration error:', error);
       return { 
         success: false, 
-        error: error.message || 'Registration failed. Please try again.' 
+        error: 'Registration failed. Please try again.' 
       };
     }
   };
